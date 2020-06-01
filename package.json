@@ -1,0 +1,22 @@
+{
+  "name": "dl-from-yt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./libs/index.js",
+  "scripts": {
+    "start": "node libs/index.js"
+  },
+  "author": "Vinicius M.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/viniciusm2001/dl-from-yt.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "follow-redirects": "^1.11.0",
+    "progress-stream": "^2.0.0",
+    "ytdl-core": "^2.1.5",
+    "ytpl": "^0.1.21"
+  },
+  "keywords": ["yt", "youtube", "download", "dl", "videos", "playlist", "channel"]
+}

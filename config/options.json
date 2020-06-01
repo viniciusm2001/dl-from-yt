@@ -1,0 +1,22 @@
+{
+  "video_quality": "4320p60",
+  "convert_to_mp3": false,
+  "convert_to_mp4": false,
+  "add_video_thumbnail_to_mp3": false,
+  "index_separator": null,
+  "date_options": {
+	 "add_zero" : false,
+    "index": [
+      "YYYY",
+      "MM",
+      "DD"
+    ],
+    "separator": "-",
+    "title_separator": "_"
+  },
+  "retry": true,
+  "max_retries": 3,
+  "retry_wait_time": 2000,
+  "check_if_file_exists": true,
+  "max_downloading": 10
+}
