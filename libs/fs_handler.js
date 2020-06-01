@@ -249,7 +249,7 @@ class FsHandler {
    }
 
    static getDlFolderPath(){
-      return path.join(os.homedir(), "Downloads", "DownloadFromYT")
+      return path.join(os.homedir(), "Downloads", "DlFromYT")
    }
 
    //DlFolderPath equals DFP

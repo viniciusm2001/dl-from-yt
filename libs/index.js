@@ -4,7 +4,7 @@ const queueFor = require("./queue");
 const emmiter = require("./emmiter");
 const constants = require("./constants");
 
-class DlFromYt {
+class DlFromYT {
 
    static async getOptions(){
       return FsHandler.getOptions();
@@ -212,4 +212,4 @@ class DlFromYt {
    }
 }
 
-module.exports = DlFromYt;
+module.exports = DlFromYT;

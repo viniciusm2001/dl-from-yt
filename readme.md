@@ -154,7 +154,7 @@ This is the path tree that will be created under your downloads folder.
 
 ```
 Downloads (the downloads folder under your os homedir)
-	|---DownloadFromYT (this, and all the subfolders inside will be created by DFY)
+	|---DlFromYT (this, and all the subfolders inside will be created by DFY)
 		|---playlists
 			|---audio and video
 			|---audio only
@@ -165,13 +165,13 @@ Downloads (the downloads folder under your os homedir)
 			|---video only
 ```
 
-Lets say you've decided to download some videos as video only, so, your videos will be saved under "/DownloadFromYT/videos/video only/", and if you where to save them as audio only it would be saved on the same path but under the "audio only" folder, and so on.
+Lets say you've decided to download some videos as video only, so, your videos will be saved under "/DlFromYT/videos/video only/", and if you where to save them as audio only it would be saved on the same path but under the "audio only" folder, and so on.
 
-Now, lets say you've decided to download a playlist called "funny videos" as audio and video, so, your playlist videos will be saved under "/DownloadFromYT/playlists/audio and video/funny videos/", and if you where to save them as video only it would be saved on the same path but under the "video only" folder, and so on.
+Now, lets say you've decided to download a playlist called "funny videos" as audio and video, so, your playlist videos will be saved under "/DlFromYT/playlists/audio and video/funny videos/", and if you where to save them as video only it would be saved on the same path but under the "video only" folder, and so on.
 
 ## Queue
 
-Basically when downloading your playlist/videos a queue will be created, in which you be able to set [how many videos will be downloaded at the same time](#max-downloading), but, a new individual queue will be created for each function call, here is an example with the "max_downloading" equal to 10.
+Basically when downloading your videos/playlist/channel a queue will be created, in which you be able to set [how many videos will be downloaded at the same time](#max-downloading), but, a new individual queue will be created for each function call, here is an example with the "max_downloading" equal to 10.
 
 Example:
 
@@ -376,7 +376,7 @@ options_json.index_separator = " - ";
 await dfy.setOptions(options_json)
 ```
 
-Resulting filenames on a playlist with 4 videos:
+Resulting filenames on a playlist with 3 videos:
 
 - 1 - Hande Yener - Kibir (Yanmam Lazım)
 - 2 - Hande Yener - Kim Bilebilir Aşkı
@@ -388,7 +388,7 @@ The "date_options" parameter is a json object, following the same format as in t
 
 If it is not null, then DFY will understand that you want to add the video upload date at the end of the filename.
 
-Example of filenames on a playlist with 3 videos:
+Example:
 
 ```javascript
 let options_json = await dfy.getOptions();
@@ -412,7 +412,7 @@ options_json.date_options = new_date_options;
 await dfy.setOptions(options_json)
 ```
 
-Resulting filenames:
+Resulting filenames on a playlist with 3 videos:
 
 - Kemal Doğulu - Hande Yener - Bir Yerde - 1 - 04_03_2014
 - SEREBRO – ПЕРЕПУТАЛА - 18_06_2015
@@ -423,13 +423,14 @@ Resulting filenames:
 The "add_zero" parameter is of type boolean, so, if set to true, when setting the date it will add zeroes to the month and day, in case they are smaller than 10.
 
 Example 1: The date 7-2-1993 will become 07-02-1993.
+
 Example 2: The date 17-5-2008 will become 17-05-2008.
 
 ##### Index
 
 The "index" parameter is an array containing the base layout of the date.
 
-The accepted options for the array are, the year ( as "YYYY"), the month (as "MM") and the day (as "DD")
+The accepted options for the array are, the year ( as "YYYY"), the month (as "MM") and the day (as "DD").
 
 Lets use the date 15-8-2012 as an example, but using "-" as separator and "add_zero" as true.
 
@@ -841,8 +842,8 @@ Example:
 const  videos_info  =  await  dfy.getVideosInfo(
   [
     "https://www.youtube.com/watch?v=8C0e9YO5dxM",
-	 "https://www.youtube.com/watch?v=uv8T4rxhGJU",
-	 "https://www.youtube.com/watch?v=mSyutsZ7GuA"
+    "https://www.youtube.com/watch?v=uv8T4rxhGJU",
+    "https://www.youtube.com/watch?v=mSyutsZ7GuA"
   ]
 );
 
