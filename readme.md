@@ -58,7 +58,7 @@ DFY will always choose the one with highest bitrate (kbps), and if 2 or more fil
 
 First the video will be downloaded, and then the audio.
 
-If the audio and video are from the same containers (example, the video is webm and the audio is webm, or, the video is mp4 and the audio is m4a) they will be merged together, but, if the containers are different they will be still be merged, but, as a .mkv instead.
+If the audio and video are from the same containers (example, the video is webm and the audio is webm, or, the video is mp4 and the audio is m4a) they will be merged together, but, if the containers are different they will still be merged, but, as a .mkv instead.
 
 Not all the videos will be available to be merged as mp4 by default, but you can convert the .webm files to .mp4 too, see [Convert to mp4](#convert-to-mp4) for more info on that.
 
@@ -68,11 +68,11 @@ If you want to download the video as audio only, or as video only, both are poss
 
 When downloading as audio only, the possible resulting files are a .webm or a m4a, and when downloading as video only it can be a .webm or a .mp4.
 
-But, if you want to, you can convert the video for it to always be an mp4, or you can convert the audio for it to always be a mp3 (and even add the video thumbnail as a "album" cover), see [Options](#options) for more info on that.
+But, if you want to, you can convert the video for it to always be an mp4, or you can convert the audio for it to always be an mp3 (and even add the video thumbnail as a "album" cover), see [Options](#options) for more info on that.
 
 ## Filenames
 
-Whenever your files are saved, or a folder is created (in case you choose not to use a custom folder), your file and folder names will suffer some alterations. There are 2 cases in which this can happen:
+Whenever your files are saved, or a folder is created (in case you choose not to use a custom folder), your files and folder names will suffer some alterations. There are 2 cases in which this can happen:
 
 ### 1st - When a playlist or video title have invalid characters in it
 
@@ -80,7 +80,7 @@ When DFY creates the folder for a playlist (when no custom folder is set), or, w
 
 This was implemented because some operating systems don't allow certain characters on the file or folder name.
 
-Those are the characters considered invalid:
+These are the characters considered invalid:
 
 - / (forward slash)
 - \ (backslash)
@@ -199,7 +199,7 @@ dfy.playlist(AUDIO_ONLY, null, url2)
 
 ## Options
 
-DFY makes it possible for you to define some options when downloading videos/playlists, so lets explain each parameter, and how to set and get them, and, how to set them to default (in case you've messed).
+DFY makes it possible for you to define some options when downloading videos/playlist/channel, so lets explain each parameter, and how to set and get them, and, how to set them to default (in case you've messed).
 
 Down below you can see the default options json.
 
@@ -285,7 +285,7 @@ The "video_quality" parameter is of type string, and can be chosen by using the 
 
 If you always want the best quality out of any video, you can just choose the last element in the "available_formats" array, or, if you would like to always get the worst, just chose the first element of it.
 
-You can choose any video quality you want, but they will follow the rules explained [here.](#how-is-the-best-video-format-chosen)
+You can choose any video quality you want, but they will follow the rules explained [here](#how-is-the-best-video-format-chosen).
 
 See the example below.
 
@@ -346,7 +346,7 @@ await dfy.setOptions(options_json);
 
 #### Convert to mp3
 
-The "convert_to_mp3" parameter is of type boolean, so, if set to true, when downloading videos as audio only all the files will be convert to mp3 (with the correct bitrate).
+The "convert_to_mp3" parameter is of type boolean, so, if set to true, when downloading videos as audio only all the files will be converted to mp3 (with the correct bitrate).
 
 #### Add video thumbnail to mp3
 
@@ -354,7 +354,7 @@ If "convert_to_mp3" is set to true, then, the "add_video_thumbnail_to_mp3" param
 
 #### Convert to mp4
 
-The "convert_to_mp4" parameter is of type boolean, so, if set to true, when downloading videos as audio and video or video only, all the files will be convert to mp4.
+The "convert_to_mp4" parameter is of type boolean, so, if set to true, when downloading videos as audio and video or video only, all the files will be converted to mp4.
 
 #### Index separator
 
@@ -362,7 +362,7 @@ The "index_separator" parameter is of type string and can be null.
 
 If it is not null, then DFY will understand that you want to add the video index at the beginning of the filename.
 
-Please use it with caution, because if you change the position of any of your playlist videos, then add new ones, and download your playlist again, the new videos will have the same position/index number of the video that where on that old position/index. It also works with multiple/single video download, but again, please use with caution, as an example, if various multiple video downloads where made without changing the index separator character, the beginning of various filenames would be the same (ex: 10 videos with '1_' at the start of their filename).
+Please use it with caution, because if you change the position of any of your playlist videos, then add new ones, and download your playlist again, the new videos will have the same position/index number of the video that where on that old position/index. It also works with multiple/single video download, but again, please use it with caution, as an example, if various multiple video downloads where made without changing the index separator character, the beginning of various filenames would be the same (ex: 10 videos with '1_' at the start of their filename).
 
 Example:
 
@@ -479,7 +479,7 @@ The "separator" parameter is of type string.
 
 Basically it is the string that will separate the date "components".
 
-Example: a date with the "index" equal to ["YYYY", "MM", "DD"] and a "separator" equal to "_", will result in the date "YYYY_MM_DD".
+Example: with a "index" equal to ["YYYY", "MM", "DD"] and a "separator" equal to "_", the resulting date will be in the format "YYYY_MM_DD".
 
 ##### Title separator
 
@@ -491,7 +491,7 @@ Example: with a "title_separator" equal to "-", and a video with the title "Sand
 
 #### Retry
 
-The "retry" parameter is of type boolean, so, if set to true, when downloading videos and a known error occur (if you have the date options set but the date wasn't able to be fetched, or, if the video info wasn't available to be fetched) it will retry the download of the ones that had any of those errors, but only after all the other "good" ones where "downloaded"/"processed" by the [queue](#queue).
+The "retry" parameter is of type boolean, so, if set to true, when downloading videos and a known error occur (when you have the "date_options" set, but the date wasn't able to be fetched, or, when the video info wasn't available to be fetched), DFY will retry the download of the affected ones, but only after all the other "good" ones where "downloaded"/"processed" by the [queue](#queue).
 
 #### Max retries
 
@@ -507,7 +507,7 @@ With it you can set the wait time (in milliseconds) before a retry happen.
 
 #### Check if file exists
 
-The "check_if_file_exists" parameter is of type boolean, so, if set to true, when downloading videos/playlists, it will check if the videos are already present in the download folder, and if so, the already downloaded videos will not be downloaded again.
+The "check_if_file_exists" parameter is of type boolean, so, if set to true, when downloading videos/playlist/channel, it will check if the videos are already present in the download folder, and if so, the already downloaded videos will not be downloaded again.
 
 But, if set to false, all the videos will be re-downloaded and their files (if present) will be overwritten too.
 
@@ -554,7 +554,7 @@ The "custom_dl_folder" parameter is of type string and can be null, it represent
 
 And a cool thing that happens when you are using custom folders, is that, if some of the folders on your path don't exist, DFY will then recursively create them.
 
-So, lets say you've specified the custom path "/home/user/my/videos/", but, the "my" folder don't exist, so, DFY will create both "my" and inside of it "videos" for you.
+So, lets say you've specified the custom path "/home/user/my/videos/", but, the "my" folder doesn't exist, so, DFY will create both "my" and inside of it "videos" for you.
 
 If you end up working with custom folders, maybe [this](#working-with-custom-folders) tip would be of some use.
 
@@ -589,7 +589,7 @@ await dfy.videos(dfy.types.AUDIO_AND_VIDEO, null, [url], null, custom_options);
 
 #### FFmpeg path (6th parameter - optional - EXPERIMENTAL)
 
-The "ffmpeg_path" parameter is of type string, and can be null, it represents a path to a ffmpeg binary, in case you don't have it accessible via or system cmd/terminal.
+The "ffmpeg_path" parameter is of type string, and can be null, it represents the path to a ffmpeg binary, in case you don't have it accessible via or system cmd/terminal.
 
 Example:
 
@@ -603,7 +603,9 @@ await dfy.videos(dfy.types.AUDIO_AND_VIDEO, null, [url], null, null, path);
 
 ### Downloading videos
 
-To download videos you need to use the DFY function "videos", you can either pass an array containing all the videos urls, or, pass a json already containing all the videos info. Lets see the two approaches.
+To download videos you need to use the DFY function "videos".
+
+You can either pass an array containing all the videos urls, or, pass a json already containing all the videos info to it. Lets see the two approaches.
 
 #### Using only the urls
 
@@ -614,7 +616,8 @@ This method is by far the easiest, lets see an example:
 const urls = [
   "https://www.youtube.com/watch?v=Bw3uBSfQJbI",
   "https://www.youtube.com/watch?v=gwX7bT4-75U",
-  "https://www.youtube.com/watch?v=LCDaw0QmQQc"
+  "https://www.youtube.com/watch?v=LCDaw0QmQQc",
+  "https://www.youtube.com/watch?v=0JCmjUv5j8Y"
 ];
 
 //just pass it as the 3rd parameter, and you are done
@@ -631,7 +634,8 @@ Example:
 const urls = [
   "https://www.youtube.com/watch?v=EHMm_ElRvMA",
   "https://www.youtube.com/watch?v=Zc6PL_f79x4",
-  "https://www.youtube.com/watch?v=gAanXAKqISE"
+  "https://www.youtube.com/watch?v=gAanXAKqISE",
+  "https://www.youtube.com/watch?v=TY4RZaUGHyU"
 ];
 
 const videos_info = await dfy.getVideosInfo(urls);
@@ -643,7 +647,9 @@ await dfy.videos(dfy.types.AUDIO_AND_VIDEO, videos_info);
 
 ### Downloading playlists and channels
 
-To download a playlist or a channel you need to use the DFY function "playlist", you can either pass the playlist/channel url, or, pass a json already containing all the playlist/channel videos info. Lets see the two approaches.
+To download a playlist or a channel you need to use the DFY function "playlist".
+
+You can either pass the playlist/channel url, or, pass a json already containing all the playlist/channel videos info to it. Lets see the two approaches.
 
 #### Using only the url
 
@@ -676,7 +682,7 @@ await dfy.videos(dfy.types.AUDIO_ONLY, videos_info);
 
 #### To get some info about the videos you are about o download
 
-When you use any of those functions to get the json containing the info on your playlist/channel, or videos, you are able to see some content about them too, like the video title,  its thumbnail url, and more.
+When you use any of those functions to get the json containing the info on your playlist/channel, or videos, you are able to see some content about them too, like the video title, its thumbnail url, and more.
 
 Lets see what "getVideosInfo" returns:
 
@@ -746,7 +752,7 @@ To get the info on your queue you need to use DFY property "listener".
 
 The "listener" works as an emitter when listening to events, because it actually is an emitter.
 
-But instead going through the hassle of a normal emitter, in which you need to remove the listeners manually, this will automatically be done by DFY after the [End](#end) is emitted.
+But instead going through the hassle of a normal emitter, in which you need to remove the listeners manually, this will automatically be done by DFY after the [End](#end) event is emitted.
 
 Example:
 
@@ -777,7 +783,7 @@ Here are all the possibilities for 'type' that a queue 'info' can have:
 
 ##### Start
 
-It  will be equal to "start", and will be emitted only once when the queue starts.
+It will be equal to "start", and will be emitted only once when the queue starts.
 
 The data it returns is null.
 
@@ -801,7 +807,7 @@ The data it returns is a json as follows:
   remaining: 2,
   //the total of videos being downloaded in the queue
   being_downloaded: 1,
-  //the total of videos that the queue has
+  //the total of videos that the queue has downloaded
   total: 10
 }
 ```
@@ -839,11 +845,12 @@ To get the info on your videos you need to use DFY property "listener", which by
 Example:
 
 ```javascript
-const  videos_info  =  await  dfy.getVideosInfo(
+const videos_info = await dfy.getVideosInfo(
   [
     "https://www.youtube.com/watch?v=8C0e9YO5dxM",
     "https://www.youtube.com/watch?v=uv8T4rxhGJU",
-    "https://www.youtube.com/watch?v=mSyutsZ7GuA"
+	 "https://www.youtube.com/watch?v=mSyutsZ7GuA",
+	 "https://www.youtube.com/watch?v=3Id-q7ATM40"
   ]
 );
 
@@ -895,7 +902,7 @@ The data it returns is null.
 
 It will be equal to "dl", and will be emitted when your video is being downloaded.
 
-The data it returns is the same json that a [progress-stream](https://www.npmjs.com/package/progress-stream#progress) returns. If you're downloading your video as audio an video, then an additional property will be available, the "total_percentage", which is the total  download percentage of the audio and video combined (video_dl_percentage + audio_dl_percentage / 2).
+The data it returns is the same json that a [progress-stream](https://www.npmjs.com/package/progress-stream#progress) returns. If you're downloading your video as audio and video, then an additional property will be available, the "total_percentage", which is the total  download percentage of the audio and video combined (video_dl_percentage + audio_dl_percentage / 2).
 
 ##### Status
 
@@ -919,9 +926,9 @@ If the video was downloaded successfully, then, the data it returns will be a st
 
 With DFY it is possible to run multiple download functions ("videos" and "playlist") at the same time.
 
-This is possible because DFY creates a temp folder separate for each function call, and before the function is about to end, DFY deletes the temp folder that it has created.
+This is possible because DFY creates a temp folder separate for each function call, and when the function is about to end, DFY deletes the temp folder that it has created.
 
-So, lets say you where running multiple download functions at the same time, but for some reason your PC crashes, well, when you turn it on again, because the old temp files would not be of any use no more, DFY main temp folder (which holds all the other temp folders created) would end up full of junk.
+So, lets say you where running multiple download functions at the same time, but for some reason your PC crashes, well, when you turn it on again, because the old temp files wouldn't be of any use no more, DFY main temp folder (which holds all the other temp folders created) would end up full of junk.
 
 In this case, or if you just want to, you can clean the DFY main temp folder using the "cleanTemp" method.
 
@@ -929,7 +936,7 @@ Example:
 
 ```javascript
 //BEWARE: dont't run this while downloading
-//any video(s)/channels/playlists
+//any videos/channels/playlists
 await dfy.cleanTemp();
 ```
 

@@ -332,6 +332,8 @@ class DlHandler {
 							} else {
 								if(video_container === "webm"){
 									merge_as += "av";
+								} else {
+									merge_as = null;
 								}
 							}
 						}
