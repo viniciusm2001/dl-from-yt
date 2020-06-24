@@ -98,7 +98,7 @@ class Utils {
 
 	static async infoPlaylist(url) {
 		return new Promise((resolve, reject) => {
-			ytpl(url, { limit: 0 }, async (err, playlist) => {
+			ytpl(url, { limit: 100 }, async (err, playlist) => {
 				if(err) {
 					reject(err);
 				} else {
