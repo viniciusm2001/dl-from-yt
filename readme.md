@@ -44,15 +44,15 @@ When downloading a video from YouTube, there will probably be various video qual
 
 But, lets assume you have chosen to download your video at 720p.
 
-The first scenario is that the video is available on 720p, but, there are 2 video files available for the 720p quality, one is a .webm, the other one is a .mp4, so, which one will be downloaded? The lightest.
+The first scenario is that the video is available on 720p, but, there are 2 video files available for the 720p quality, one is a .webm, the other one is a .mp4, so, which one will be downloaded? The lightest (but you can change it [here](#biggest-video)).
 
-The second scenario is that the video is not available in 720p, only on 480p and below. Then, the video will be downloaded at 480p (the best quality available), and if there are 2 or more files at the 480p quality, the lightest will be downloaded.
+The second scenario is that the video is not available in 720p, only on 480p and below. Then, the video will be downloaded at 480p (the best quality available), and if there are 2 or more files at the 480p quality, the lightest will be downloaded (but you can change it [here](#biggest-video)).
 
-The third scenario is that the video is only available on 1080p and above. The video will be downloaded at the closest best quality, which is 1080p, and again, if 2 1080p or more files are available, the lightest will be downloaded.
+The third scenario is that the video is only available on 1080p and above. The video will be downloaded at the closest best quality, which is 1080p, and again, if 2 1080p or more files are available, the lightest will be downloaded (but you can change it [here](#biggest-video)).
 
 ## How is the best audio format chosen?
 
-DFY will always choose the one with highest bitrate (kbps), and if 2 or more files have the same bitrate, the lightest will be downloaded.
+DFY will always choose the one with highest bitrate (kbps), and if 2 or more files have the same bitrate, the lightest will be downloaded (but you can change it [here](#biggest-audio)).
 
 ## Downloading audio and video
 
@@ -224,7 +224,9 @@ Down below you can see the default options json.
   max_retries: 3,
   retry_wait_time: 2000,
   check_if_file_exists: true,
-  max_downloading: 10
+  max_downloading: 10,
+  biggest_video : false,
+  biggest_audio : false
 }
 ```
 
@@ -514,6 +516,14 @@ But, if set to false, all the videos will be re-downloaded and their files (if p
 #### Max downloading
 
 The "max_downloading" parameter is of type integer, and represents the maximum videos to be downloaded by each [queue](#queue).
+
+#### Biggest video
+
+The "biggest_video" parameter is of type boolean, and represents if the video file to be downloaded will be the lightest (in case it is false) or the heaviest (in case it is true).
+
+#### Biggest audio
+
+The "biggest_audio" parameter is of type boolean, and represents if the audio file to be downloaded will be the lightest (in case it is false) or the heaviest (in case it is true).
 
 ## Downloading
 

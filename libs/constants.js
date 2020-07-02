@@ -64,7 +64,9 @@ const constants = {
 		max_retries: 3,
 		retry_wait_time: 2000,
 		check_if_file_exists: true,
-		max_downloading: 10
+		max_downloading: 10,
+		biggest_video : false,
+		biggest_audio : false
 	}
 };
 

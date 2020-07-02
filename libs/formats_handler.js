@@ -2,7 +2,7 @@ const Utils = require("./utils");
 
 class FormatsHandler {
 
-	static getVideoFormat(formats, video_quality) {
+	static getVideoFormat(formats, video_quality, biggest_video) {
 
 		const get_format_score = (value_or_qualityLabel) => {
 					
@@ -54,7 +54,7 @@ class FormatsHandler {
 
 					} else {
 
-						if(size < best_video_size) {
+						if(biggest_video ? size > best_video_size : size < best_video_size) {
 							best_video_index = i;
 							best_video_size = size;
 						}
@@ -86,7 +86,7 @@ class FormatsHandler {
 								} else {
 									
 									if(diff === best_diff){
-										if(size < best_diff_video_size) {
+										if(biggest_video ? size > best_diff_video_size : size < best_diff_video_size) {
 											best_video_index = i;
 											best_diff_video_size = size;
 										}
@@ -107,7 +107,7 @@ class FormatsHandler {
 
 									if(format_score === best_video_score){
 
-										if(size < best_chosen_video_size){
+										if(biggest_video ? size > best_chosen_video_size : size < best_chosen_video_size){
 											best_video_index = i;	
 											best_chosen_video_size = size;
 										}
@@ -132,7 +132,7 @@ class FormatsHandler {
 
 	}
 
-	static getAudioFormat(formats) {
+	static getAudioFormat(formats, biggest_audio) {
 				
 		let best_audio_size = 0;
 		let best_audio_index = 0;
@@ -156,7 +156,7 @@ class FormatsHandler {
 
 					} else {
 
-						if(size < best_audio_size){
+						if(biggest_audio ? size > best_audio_size : size < best_audio_size){
 							set_best_audio();
 						}
 
@@ -173,10 +173,10 @@ class FormatsHandler {
 		return formats[best_audio_index]
 	}
 
-	static getFormats(formats, video_quality) {
+	static getFormats(formats, video_quality, biggest_video, biggest_audio) {
 		
-		const audio = this.getAudioFormat(formats);
-		const video = this.getVideoFormat(formats, video_quality);
+		const audio = this.getAudioFormat(formats, biggest_audio);
+		const video = this.getVideoFormat(formats, video_quality, biggest_video);
 
 		const formats_js = {
 			audio,

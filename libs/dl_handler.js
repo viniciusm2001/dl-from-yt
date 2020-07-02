@@ -285,13 +285,13 @@ class DlHandler {
 			try {
 				Utils.emitInfo(id, "status", "Begining download");
 
-				const { date_options, convert_to_mp3, video_quality } = options;
+				const { date_options, convert_to_mp3, video_quality, biggest_video } = options;
 				let { convert_to_mp4 } = options;
 				let merge_as = null;
 
 				const info = await ytdl.getInfo(video_url);
 
-				const formats = FormatsHandler.getFormats(info.formats, video_quality);
+				const formats = FormatsHandler.getFormats(info.formats, video_quality, biggest_video);
 
 				const audio_container = formats.audio.container;
 				const audio_bitrate = formats.audio.audioBitrate;
