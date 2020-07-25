@@ -115,7 +115,7 @@ class DlFromYT {
 						retry = false;
 						
 						Utils.emitQueueInfo(queue_id, "end");
-
+						
 						resolve();
 
 					} catch(err) {

@@ -40,20 +40,19 @@ class Utils {
 		return items;
 	}
 
-	static getDtFormated(date, date_options) {
+	static getDtFormated(date_string, date_options) {
 
 		const { index, separator, add_zero } = date_options;
-		const date_string = date.toLocaleDateString("en-US");
-		const date_array = date_string.split("/");
+		const date_array = date_string.split("-");
 		let date_formated = "";
 		
 		const add_zero_to_number = (number) => {
 			
-			if(add_zero){
+			if(!add_zero){
 				number = number + "";
 
-				if(number.length === 1) {
-					number = "0" + number;
+				if(number[0] === "0") {
+					number = "" + number[1];
 				}
 			}
 
@@ -63,15 +62,15 @@ class Utils {
 		for (let i = 0; i < index.length; i++) {
 			switch(index[i]) {
 				case "YYYY":
-					date_formated += separator + date_array[2];
+					date_formated += separator + date_array[0];
 					break;
 
 				case "MM":
-					date_formated += separator + add_zero_to_number(date_array[0]);
+					date_formated += separator + add_zero_to_number(date_array[1]);
 					break;
 
 				case "DD":
-					date_formated += separator + add_zero_to_number(date_array[1]);
+					date_formated += separator + add_zero_to_number(date_array[2]);
 					break;
 			}
 		}
@@ -84,12 +83,11 @@ class Utils {
 	static async getVideoDt(info, date_options) {
 		return new Promise(async (resolve, reject) => {
 
-			if(isNaN(info.published)) {
+			if(!info.videoDetails.publishDate) {
 				reject(new Error(constants.errors.GET_DT));
 
 			} else {
-				const dt = new Date(info.published);
-				const date_formated = this.getDtFormated(dt, date_options);
+				const date_formated = this.getDtFormated(info.videoDetails.publishDate, date_options);
 				resolve(date_formated);
 			}
 			

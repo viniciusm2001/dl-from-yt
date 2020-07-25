@@ -34,21 +34,24 @@ const queueFor = async (queue_type, type, options, base_dl_path, videos_info, re
 				being_downloaded: downloading,
 				total: videos_length
 			}
-
+			
 			Utils.emitQueueInfo(queue_id, "dl", dl_status);
-
+			let removed_from_downloading = false;
+			
+			
          if(downloading < max_downloading){
 
             downloading += 1;
 
             if(index < videos_length){
-
+					
 					//vi == video index
 					const vi = index;
 
 					index += 1;
 
 					const log_title = videos_info.items[vi].title;
+					
 					const video_url = videos_info.items[vi].url_simple;
 					const id = videos_info.items[vi].id;
 					const video_was_downloaded = videos_info.items[vi].downloaded;
@@ -89,13 +92,13 @@ const queueFor = async (queue_type, type, options, base_dl_path, videos_info, re
 							}
 						}
 					}
-
+					
 					if(can_dl_video){
 
 						queue_to_download();
 
 						console.log("Now downloading '" + log_title + "'")
-
+						
 						try {
 							await DlHandler.downloadVideoAs(
 								type,
@@ -147,6 +150,10 @@ const queueFor = async (queue_type, type, options, base_dl_path, videos_info, re
 					}
 
 					ended_downloads += 1;
+
+					downloading -= 1;
+
+					removed_from_downloading = true
 					
 					queue_to_download();
 
@@ -196,10 +203,12 @@ const queueFor = async (queue_type, type, options, base_dl_path, videos_info, re
                      reject(retry_err);
                   }
                }
-            }
-
-            downloading -= 1;
-         }
+				}
+				
+				if(!removed_from_downloading){
+					downloading -= 1;
+				}
+			}
       }
 
 		try {
