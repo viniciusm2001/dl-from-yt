@@ -1,6 +1,6 @@
 {
   "name": "dl-from-yt",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "main": "./libs/index.js",
   "scripts": {
@@ -15,8 +15,8 @@
   "dependencies": {
     "follow-redirects": "^1.12.1",
     "progress-stream": "^2.0.0",
-    "ytdl-core": "^2.1.7",
-    "ytpl": "^0.1.22"
+    "ytdl-core": "^3.1.2",
+    "ytpl": "^0.2.0"
   },
   "keywords": [
     "yt",
