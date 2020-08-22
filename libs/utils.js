@@ -95,8 +95,21 @@ class Utils {
 	}
 
 	static async infoPlaylist(url) {
-		return new Promise((resolve, reject) => {
-			ytpl(url, { limit: 0 }, async (err, playlist) => {
+		return new Promise(async (resolve, reject) => {
+
+			try {
+				let playlist = await ytpl(url, { limit: Infinity });
+
+				playlist.queue_id = this.getRandId();
+				playlist.items = await this.getItemsIdsAndDlFields(playlist.items);
+				playlist.items = this.getPlaylistItemsClean(playlist.items);
+				resolve(playlist);
+
+			} catch (err) {
+				reject(err);
+			}
+			/*
+			ytpl(url, { limit: Infinity }, async (err, playlist) => {
 				if(err) {
 					reject(err);
 				} else {
@@ -106,6 +119,8 @@ class Utils {
 					resolve(playlist);
 				}
 			});
+
+			*/
 		})
 	}
 
@@ -120,11 +135,11 @@ class Utils {
 					const info = await ytdl.getInfo(urls[i]);
 					let video = {};
 
-					video.title = info.title;
+					video.title = info.videoDetails.title;
 					video.url_simple = urls[i];
 					video.thumbnail = this.subStringWhenCharAppears(
 						"?",
-						info.player_response.videoDetails.thumbnail.thumbnails[0].url
+						info.videoDetails.thumbnail.thumbnails[0].url
 					);
 
 					videos.items.push(video);

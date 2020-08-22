@@ -139,32 +139,35 @@ class FormatsHandler {
 		let best_audio_bitrate = 0;
 
 		for (let i = 0; i < formats.length; i++) {
-			if(formats[i].audioQuality) {
+			
+			if(!formats[i].qualityLabel) {
+				if(formats[i].audioQuality) {
 
-				const size = parseInt(formats[i].contentLength);
+					const size = parseInt(formats[i].contentLength);
 
-				const set_best_audio = () => {
-					best_audio_index = i;
-					best_audio_size = size;
-					best_audio_bitrate = formats[i].audioBitrate;
-				}
-
-				if(formats[i].audioBitrate === best_audio_bitrate){
-
-					if(best_audio_size == 0){
-						set_best_audio();
-
-					} else {
-
-						if(biggest_audio ? size > best_audio_size : size < best_audio_size){
-							set_best_audio();
-						}
-
+					const set_best_audio = () => {
+						best_audio_index = i;
+						best_audio_size = size;
+						best_audio_bitrate = formats[i].audioBitrate;
 					}
 
-				} else {
-					if(formats[i].audioBitrate > best_audio_bitrate){
-						set_best_audio();
+					if(formats[i].audioBitrate === best_audio_bitrate){
+
+						if(best_audio_size == 0){
+							set_best_audio();
+
+						} else {
+
+							if(biggest_audio ? size > best_audio_size : size < best_audio_size){
+								set_best_audio();
+							}
+
+						}
+
+					} else {
+						if(formats[i].audioBitrate > best_audio_bitrate){
+							set_best_audio();
+						}
 					}
 				}
 			}
