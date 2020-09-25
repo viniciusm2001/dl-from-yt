@@ -66,7 +66,8 @@ const constants = {
 		check_if_file_exists: true,
 		max_downloading: 10,
 		biggest_video : false,
-		biggest_audio : false
+		biggest_audio : false,
+		log_already_downloaded: false
 	}
 };
 

@@ -263,6 +263,31 @@ class Utils {
 		return;
 	}
 
+	static getFileOrFolder(file_path, get_file) {
+
+		let slash_type = "";
+
+		if(file_path.includes("//")) {
+			slash_type = "//";
+
+		} else {
+			slash_type = "\\";
+		}
+
+		let file_path_array = file_path.split(slash_type);
+		
+		let last_array_index = file_path_array.length - 1;
+
+		if(get_file) {
+			return file_path_array[last_array_index];
+
+		} else {
+			file_path_array.splice(last_array_index, 1);
+			return file_path_array.join(slash_type);
+		}
+
+	}
+
 }
 
 module.exports = Utils;

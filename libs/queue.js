@@ -17,6 +17,7 @@ const queueFor = async (queue_type, type, options, base_dl_path, videos_info, re
 			max_downloading, 
 			add_video_thumbnail_to_mp3, 
 			check_if_file_exists,
+			log_already_downloaded
 		} = options;
 
       let errors = [];
@@ -80,6 +81,7 @@ const queueFor = async (queue_type, type, options, base_dl_path, videos_info, re
 						
 							if(check_if_file_exists){
 								if(await FsHandler.fileExists(base_dl_path, Utils.getStrClean(log_title))){
+									
 									can_dl_video = false;
 									
 									videos_info.items[vi].downloaded = true;
@@ -87,7 +89,10 @@ const queueFor = async (queue_type, type, options, base_dl_path, videos_info, re
 									Utils.emitInfo(id, "status", "File has already been downloaded");
 									Utils.emitInfo(id, "end");
 
-									console.log("'" + log_title + "' has already been downloaded");
+									if(log_already_downloaded) {
+										console.log("'" + log_title + "' has already been downloaded");
+									}
+
 								}
 							}
 						}

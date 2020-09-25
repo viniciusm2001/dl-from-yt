@@ -1,15 +1,12 @@
 const fs = require("fs");
 const ytdl = require("ytdl-core");
 const { exec } = require('child_process');
-const follow_redirects = require('follow-redirects');
-follow_redirects.maxBodyLength = 10000 * 1024 * 1024 * 1024;
-const { https } = follow_redirects;
 const FsHandler = require("./fs_handler");
 const FormatsHandler = require("./formats_handler");
 const Utils = require("./utils");
-const progress_stream = require("progress-stream");
 const emmiter = require("./emmiter");
 const types = require("./constants").types;
+const { DownloaderHelper } = require('node-downloader-helper');
 
 class DlHandler {
 
@@ -31,61 +28,32 @@ class DlHandler {
 		})
 	}
 
-	static async downloadFileFromUrl(url, file_stream, id) {
+	static async dl(url, dl_path, id) {
 		return new Promise((resolve, reject) => {
 
-			https.get(url, response => {
+			const dl_options = {
+				fileName: Utils.getFileOrFolder(dl_path, true),
+				retry: { maxRetries: 999, delay: 5000 },
+				forceResume: true, 
+				removeOnStop: false,
+				removeOnFail: false
+			};
 
-				const { statusCode } = response;
-				const content_length = response.headers["content-length"];
+			const dl_file = new DownloaderHelper(
+				url, 
+				Utils.getFileOrFolder(dl_path, false), 
+				dl_options
+			);
+ 
+			dl_file
+			.on('error', err => reject(err))
+			.on("progress", stats => emmiter.emit("dl_status_" + id, stats))
+			.on("end", () => resolve())
 
-				const stream_monitor = progress_stream({
-					length: content_length,
-					time: 1000
-				});
+			dl_file
+			.start()
+			.catch(err => err ? null : null);
 
-				let err = true;
-
-				stream_monitor.on("progress", dl_status => {
-					emmiter.emit("dl_status_" + id, dl_status)
-				});
-
-				if(statusCode >= 200) {
-					if(statusCode < 300){
-
-						err = false;
-
-						response
-						.pipe(stream_monitor)
-						.pipe(file_stream)
-						.on('error', err => reject(err))
-						.on('finish', () => resolve());
-
-					}
-				}
-				
-				err ? reject(new Error("HTTP status " + statusCode)) : null;
-			})
-			.on('error', err => {
-				reject(err);
-			});
-		})
-	}
-
-	static dl(url, dl_path, id) {
-
-		return new Promise(async (resolve, reject) => {
-
-			const file_stream = fs.createWriteStream(dl_path);
-
-			try {
-				await this.downloadFileFromUrl(url, file_stream, id);
-				resolve();
-
-			} catch (err) {
-				file_stream.close();
-				reject(err)
-			}
 		})
 	}
 
@@ -175,8 +143,8 @@ class DlHandler {
 			let total_percentage = 0;
 
 			emmiter.on("dl_status_" + id, dl_status => {
-				dl_status.total_percentage = 
-					(parseInt(dl_status.percentage) / 2) + total_percentage;
+				dl_status.total_progress = 
+					(parseInt(dl_status.progress) / 2) + total_percentage;
 
 				Utils.emitInfo(id, "dl", dl_status);
 			})

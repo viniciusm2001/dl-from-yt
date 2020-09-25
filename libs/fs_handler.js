@@ -52,9 +52,9 @@ class FsHandler {
             if(err){
                resolve(exists);
             } else {
-
-               for(let i = 0; i < files.length; i++){
-                  if(files[i].includes(file_name)){
+					
+               for(let i = 0; i < files.length; i++){ 
+                  if(files[i].toLowerCase().includes(file_name.toLowerCase())){
                      exists = true;
 							break;
 						}
