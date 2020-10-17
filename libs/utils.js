@@ -3,6 +3,8 @@ const ytpl = require("ytpl");
 const emmiter = require("./emmiter");
 const os = require('os');
 const constants = require("./constants");
+const FsHandler = require("./fs_handler");
+const { DownloaderHelper } = require('node-downloader-helper');
 
 class Utils {
 
@@ -103,24 +105,12 @@ class Utils {
 				playlist.queue_id = this.getRandId();
 				playlist.items = await this.getItemsIdsAndDlFields(playlist.items);
 				playlist.items = this.getPlaylistItemsClean(playlist.items);
+
 				resolve(playlist);
 
 			} catch (err) {
 				reject(err);
 			}
-			/*
-			ytpl(url, { limit: Infinity }, async (err, playlist) => {
-				if(err) {
-					reject(err);
-				} else {
-					playlist.queue_id = this.getRandId();
-					playlist.items = await this.getItemsIdsAndDlFields(playlist.items);
-					playlist.items = this.getPlaylistItemsClean(playlist.items);
-					resolve(playlist);
-				}
-			});
-
-			*/
 		})
 	}
 

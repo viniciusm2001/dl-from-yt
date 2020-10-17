@@ -39,7 +39,8 @@ class FormatsHandler {
 		const video_quality_score = get_format_score(video_quality);
 
 		for (let i = 0; i < formats.length; i++) {
-			if(formats[i].qualityLabel) {
+			
+			if(formats[i].hasVideo) {
 
 				const format_score = get_format_score(formats[i].qualityLabel);
 				const size = parseInt(formats[i].contentLength);
@@ -128,8 +129,7 @@ class FormatsHandler {
 			}
 		}
 
-		return formats[best_video_index]
-
+		return formats[best_video_index];
 	}
 
 	static getAudioFormat(formats, biggest_audio) {
@@ -140,8 +140,8 @@ class FormatsHandler {
 
 		for (let i = 0; i < formats.length; i++) {
 			
-			if(!formats[i].qualityLabel) {
-				if(formats[i].audioQuality) {
+			if(!formats[i].hasVideo) {
+				if(formats[i].hasAudio) {
 
 					const size = parseInt(formats[i].contentLength);
 

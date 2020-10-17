@@ -1,5 +1,4 @@
 const fs = require("fs");
-const Utils = require("./utils");
 const os = require('os');
 const path = require("path");
 const constants = require("./constants");
@@ -186,15 +185,19 @@ class FsHandler {
       })
 	}
 	
-	static async getQueueTempPath(){
+	static async getTempPath(){
 		return new Promise(async (resolve, reject) => {
+
+			const getRandId = () => {
+				return new Date().getTime() + "" + Math.round(Math.random() * 1000000);
+			}
 
 			const base_temp_path = this.getPathWithDirn("..", "temp");
 			let queue_temp_path = "";
 			let created = false;
 
 			while(!created){
-				const folder_name = Utils.getRandId();
+				const folder_name = getRandId();
 
 				queue_temp_path = this.getPath(base_temp_path, folder_name);
 

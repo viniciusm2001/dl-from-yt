@@ -227,7 +227,8 @@ Down below you can see the default options json.
   max_downloading: 10,
   biggest_video : false,
   biggest_audio : false,
-  log_already_downloaded: false
+  log_already_downloaded: false,
+  best_mp3_thumbnails: false
 }
 ```
 
@@ -529,6 +530,10 @@ The "biggest_audio" parameter is of type boolean, and represents if the audio fi
 #### Log already downloaded
 
 The "log_already_downloaded" parameter is of type boolean, and represents if it will console log the title of the videos that you already downloaded.
+
+#### Best mp3 thumbnails
+
+If "convert_to_mp3" and "add_video_thumbnail_to_mp3" are set to true, then, the "best_mp3_thumbnails" parameter, that is of type boolean, will be able to take effect, so, if set to true, when downloading videos as audio only all the mp3 files will also get the best quality thumbnail added as a cover.
 
 ## Downloading
 

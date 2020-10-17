@@ -67,7 +67,8 @@ const constants = {
 		max_downloading: 10,
 		biggest_video : false,
 		biggest_audio : false,
-		log_already_downloaded: false
+		log_already_downloaded: false,
+		best_mp3_thumbnails: false
 	}
 };
 

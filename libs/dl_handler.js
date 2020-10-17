@@ -1,4 +1,3 @@
-const fs = require("fs");
 const ytdl = require("ytdl-core");
 const { exec } = require('child_process');
 const FsHandler = require("./fs_handler");
@@ -7,6 +6,7 @@ const Utils = require("./utils");
 const emmiter = require("./emmiter");
 const types = require("./constants").types;
 const { DownloaderHelper } = require('node-downloader-helper');
+const { resolve } = require("path");
 
 class DlHandler {
 
@@ -57,6 +57,103 @@ class DlHandler {
 		})
 	}
 
+	static async saveThumbnail(base_thumbnail_url, get_best_thumbnail, dl_path) {
+		
+		const check_thumbnail = async (url, save) => {
+			return new Promise (async (resolve) => {
+				
+				let temp_folder = ""
+				let temp_file = "";
+				
+				if(!save){
+					temp_folder = await FsHandler.getTempPath();
+					temp_file = Utils.getRandId();
+				}
+
+				let ended = false;
+
+				const end = async (boolean) => {
+					if(!ended) {
+
+						ended = true;
+
+						try {
+							await FsHandler.deleteFolderAndFilesInside(temp_folder);
+							resolve(boolean);
+
+						} catch (err) {
+							resolve(boolean);
+						}
+						
+					}
+				}
+
+				const dl_options = {
+					fileName: save ? Utils.getFileOrFolder(dl_path, true) : temp_file,
+					retry: { maxRetries: 999, delay: 5000 },
+					forceResume: true,
+					removeOnStop: false,
+					removeOnFail: false
+				};
+
+				const dl_file = new DownloaderHelper(
+					url, 
+					save ? Utils.getFileOrFolder(dl_path, false) : temp_folder, 
+					dl_options
+				);
+	
+				dl_file
+				.on('error', async () => {
+
+					dl_file.stop();
+					save ? resolve() : await end(false);
+					
+				})
+				.on("end", async () => {
+					
+					dl_file.stop();
+					save ? resolve() : await end(true);
+					
+				})
+
+				dl_file
+				.start()
+				.catch(err => err ? null : null);
+			})
+		}
+
+		let best_thumbnail = "";
+
+		if(get_best_thumbnail){
+
+			let jpgs_names = [
+				"maxresdefault.jpg", "sddefault.jpg", 
+				"hqdefault.jpg", "mqdefault.jpg"
+			];
+
+			const regex = new RegExp(jpgs_names.join("|"), "g");
+
+			for(let o = 0; o < jpgs_names.length; o++){
+
+				best_thumbnail = 
+					base_thumbnail_url.replace(regex, jpgs_names[o]);
+
+				const is_thumbnail_ok = await check_thumbnail(best_thumbnail);
+
+				if(is_thumbnail_ok) {
+					break;
+				}
+			}
+
+		} else {
+			best_thumbnail = base_thumbnail_url;
+		}
+		
+		await check_thumbnail(best_thumbnail, true);
+
+		return;
+	}
+
 	static async mergeAs(merge_opt, video_path, audio_path, output_path, ffmpeg_path, audio_bitrate) {
 		return new Promise(async (resolve, reject) => {
 
@@ -92,7 +189,7 @@ class DlHandler {
 		})
 	}
 
-	static async convertTo(type, input_path, output_path, ffmpeg_path, audio_bitrate = null, thumbnail_url = null) {
+	static async convertTo(type, input_path, output_path, ffmpeg_path, audio_bitrate = null, thumbnail_url = null, best_mp3_thumbnails = null) {
 		return new Promise(async (resolve, reject) => {
 
 			let cmd = "";
@@ -109,7 +206,6 @@ class DlHandler {
 				} else {
 					cmd = '-i "' + input_path + '" -b:a ' + audio_bitrate + 'k "' + output_path + '"';
 				}
-				
 			}
 			
 			try {
@@ -117,8 +213,29 @@ class DlHandler {
 
 				if(type === "mp3"){
 					if(thumbnail_url){
-						cmd = '-i "' + temp_mp3_path + '" -i "' + thumbnail_url + '" -map 0:0 -map 1:0 -c copy -metadata:s:v title="Youtube video thumbnail" "' + output_path + '"';
+
+						const thumbnail_path = Utils.changeFileExtension(input_path, "jpg");
+
+						await this.saveThumbnail(
+							thumbnail_url, 
+							best_mp3_thumbnails, 
+							thumbnail_path
+						);
+
+						cmd = '-i "' + temp_mp3_path + '" -i "' + thumbnail_path + '" -map 0:0 -map 1:0 -c copy -metadata:s:v title="Youtube video thumbnail" "' + output_path + '"';
+						
+						while(
+							!(await FsHandler.fileExists(
+								Utils.getFileOrFolder(thumbnail_path, false),
+								Utils.getFileOrFolder(thumbnail_path, true)
+							))
+						){
+							await Utils.sleep(500);
+						}
+
 						await this.ffmpeg(cmd, ffmpeg_path);
+						
+						await FsHandler.deleteFile(thumbnail_path);
 						await FsHandler.deleteFile(temp_mp3_path);
 					}
 				}
@@ -184,7 +301,7 @@ class DlHandler {
 
 	}
 
-	static dlAudioOrVideo(type, dl_url, path, id, convert, temp_path, ffmpeg_path, audio_bitrate = null, thumbnail_url = null) {
+	static dlAudioOrVideo(type, dl_url, path, id, convert, temp_path, ffmpeg_path, audio_bitrate = null, thumbnail_url = null, best_mp3_thumbnails = null) {
 		return new Promise(async (resolve, reject) => {
 
 			let downloaded = false;
@@ -225,7 +342,7 @@ class DlHandler {
 
 					if(convert) {
 						Utils.emitInfo(id, "status", "Converting to mp3");
-						await this.convertTo("mp3", audio_path, path, ffmpeg_path, audio_bitrate, thumbnail_url);
+						await this.convertTo("mp3", audio_path, path, ffmpeg_path, audio_bitrate, thumbnail_url, best_mp3_thumbnails);
 
 					} else {
 						Utils.emitInfo(id, "status", "Moving file");
@@ -253,7 +370,7 @@ class DlHandler {
 			try {
 				Utils.emitInfo(id, "status", "Begining download");
 
-				const { date_options, convert_to_mp3, video_quality, biggest_video } = options;
+				const { date_options, convert_to_mp3, video_quality, biggest_video, best_mp3_thumbnails } = options;
 				let { convert_to_mp4 } = options;
 				let merge_as = null;
 
@@ -293,15 +410,17 @@ class DlHandler {
 
 								if(audio_container !== "mp4"){
 									merge_as += "a";
-								} else {
+								}
+								
+								if(video_container !== "mp4"){
 									merge_as += "v";
 								}
 
 							} else {
-								if(video_container === "webm"){
-									merge_as += "av";
-								} else {
+								if(video_container === "mp4"){
 									merge_as = null;
+								} else {
+									merge_as += "av";
 								}
 							}
 						}
@@ -328,7 +447,7 @@ class DlHandler {
 						break;
 				
 					case types.AUDIO_ONLY:
-						await this.dlAudioOrVideo("audio", audio_dl_url, audio_dl_path, id, convert_to_mp3, temp_path, ffmpeg_path, audio_bitrate, thumbnail_url);
+						await this.dlAudioOrVideo("audio", audio_dl_url, audio_dl_path, id, convert_to_mp3, temp_path, ffmpeg_path, audio_bitrate, thumbnail_url, best_mp3_thumbnails);
 						break;
 				}
 				

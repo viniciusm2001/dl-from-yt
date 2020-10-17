@@ -125,8 +125,6 @@ const queueFor = async (queue_type, type, options, base_dl_path, videos_info, re
 
 							let is_retry_err = false;
 
-							Utils.emitInfo(id, "err", err.message);
-
 							if(is_retry_enabled){
 
 								if(err.message === constants.errors.GET_DT){
@@ -139,7 +137,15 @@ const queueFor = async (queue_type, type, options, base_dl_path, videos_info, re
 									retry = true;
 									is_retry_err = true;
 								}
+								
+								if(err.message.includes("Cookie")){
+									err.message += ", but the download will be retried later";
+									retry = true;
+									is_retry_err = true;
+								}
 							}
+
+							Utils.emitInfo(id, "err", err.message);
 
 							if(!is_retry_err){
 								videos_info.items[vi].downloaded = true;
@@ -218,7 +224,7 @@ const queueFor = async (queue_type, type, options, base_dl_path, videos_info, re
 
 		try {
 			await FsHandler.createFolder(base_dl_path);
-			queue_temp_path = await FsHandler.getQueueTempPath();
+			queue_temp_path = await FsHandler.getTempPath();
 			queue_to_download();
 
 		} catch (err) {
