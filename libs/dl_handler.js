@@ -6,7 +6,6 @@ const Utils = require("./utils");
 const emmiter = require("./emmiter");
 const types = require("./constants").types;
 const { DownloaderHelper } = require('node-downloader-helper');
-const { resolve } = require("path");
 
 class DlHandler {
 
