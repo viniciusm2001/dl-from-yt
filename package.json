@@ -1,6 +1,6 @@
 {
   "name": "dl-from-yt",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "",
   "main": "./libs/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "node-downloader-helper": "^1.0.15",
-    "ytdl-core": "^3.4.1",
+    "ytdl-core": "^4.0.0",
     "ytpl": "^1.0.1"
   },
   "keywords": [
