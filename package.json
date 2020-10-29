@@ -1,6 +1,6 @@
 {
   "name": "dl-from-yt",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "",
   "main": "./libs/index.js",
   "scripts": {
@@ -19,7 +19,6 @@
   },
   "keywords": [
     "yt",
-    "youtube",
     "download",
     "dl",
     "videos",

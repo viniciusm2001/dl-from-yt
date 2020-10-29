@@ -221,7 +221,7 @@ class DlHandler {
 							thumbnail_path
 						);
 
-						cmd = '-i "' + temp_mp3_path + '" -i "' + thumbnail_path + '" -map 0:0 -map 1:0 -c copy -metadata:s:v title="Youtube video thumbnail" "' + output_path + '"';
+						cmd = '-i "' + temp_mp3_path + '" -i "' + thumbnail_path + '" -map 0:0 -map 1:0 -c copy -metadata:s:v title="YT video thumbnail" "' + output_path + '"';
 						
 						while(
 							!(await FsHandler.fileExists(

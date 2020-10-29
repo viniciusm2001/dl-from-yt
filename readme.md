@@ -1,7 +1,7 @@
 
 # Dl From YT
 
-Dl From YT (or DFY) is an npm package that allows you to download videos, playlists, and channels from YouTube.
+Dl From YT (or DFY) is an npm package that allows you to download videos, playlists, and channels from YT.
 
 Note: DFY cannot download livestreams, or recorded livestreams.
 
@@ -32,7 +32,7 @@ Here are some tutorials:
 
 # How it works?
 
-Whenever you are watching a video on YouTube, two separate files will be downloaded, one containing the audio, and the other one containing the video, the YouTube player will "sync" those files and then play the video.
+Whenever you are watching a video on YT, two separate files will be downloaded, one containing the audio, and the other one containing the video, the YT player will "sync" those files and then play the video.
 
 So, when using DFY to download any video, it will download both of those files, and then they will be merged together using FFmpeg.
 
@@ -40,7 +40,7 @@ Or, if want to, it is possible download only the video or only the audio.
 
 ## How is the best video format chosen?
 
-When downloading a video from YouTube, there will probably be various video qualities to choose from (144p, 240p, 360p, etc), and using DFY you will be able to choose any video quality you want to, see [Video quality](#video-quality) for more info on that.
+When downloading a video from YT, there will probably be various video qualities to choose from (144p, 240p, 360p, etc), and using DFY you will be able to choose any video quality you want to, see [Video quality](#video-quality) for more info on that.
 
 But, lets assume you have chosen to download your video at 720p.
 
@@ -139,7 +139,7 @@ If you are working with custom folders, DFY will not be able to clean the folder
 Lets see an example:
 
 ```javascript
-const url = "https://www.youtube.com/playlist?list=PLZlIzKeS1ckgbF-rkoAN3AdX0Gg-_DjbQ";
+const url = "https://www.yt-url.com/playlist?list=PLZlIzKeS1ckgbF-rkoAN3AdX0Gg-_DjbQ";
 
 const playlist = await dfy.getPlaylistVideos(url);
 
@@ -176,8 +176,8 @@ Basically when downloading your videos/playlist/channel a queue will be created,
 Example:
 
 ```javascript
-const url1 = "https://www.youtube.com/playlist?list=PLpXA1IqBgeZRRJRC9GKUPkZSIk4hLb3DZ";
-const url2 = "https://www.youtube.com/playlist?list=PLZlIzKeS1ckgbF-rkoAN3AdX0Gg-_DjbQ";
+const url1 = "https://www.yt-url.com/playlist?list=PLpXA1IqBgeZRRJRC9GKUPkZSIk4hLb3DZ";
+const url2 = "https://www.yt-url.com/playlist?list=PLZlIzKeS1ckgbF-rkoAN3AdX0Gg-_DjbQ";
 
 //here 10 videos will be downloaded at the same time
 dfy.playlist(VIDEO_ONLY, null, url1)
@@ -564,7 +564,7 @@ types.AUDIO_ONLY;
 types.AUDIO_AND_VIDEO;
 
 //so lets download a playlist as video only
-const url = "https://www.youtube.com/playlist?list=PLk4iMx0kM9My9EaM-7QAnAqna6itFBzfm";
+const url = "https://www.yt-url.com/playlist?list=PLk4iMx0kM9My9EaM-7QAnAqna6itFBzfm";
 await dfy.playlist(types.VIDEO_ONLY, null, url); //the other params are optional
 ```
 
@@ -583,7 +583,7 @@ Example:
 ```javascript
 const my_custom_path = "./some/cool/path/";
 
-const url = "https://www.youtube.com/watch?v=sprukwRl9ZQ";
+const url = "https://www.yt-url.com/watch?v=sprukwRl9ZQ";
 
 await dfy.videos(dfy.types.AUDIO_ONLY, null, [url], my_custom_path);
 ```
@@ -602,7 +602,7 @@ Example:
 //lets use the default, instead of the saved one
 const custom_options = dfy.default_options;
 
-const url = "https://www.youtube.com/watch?v=slnugihiJtE";
+const url = "https://www.yt-url.com/watch?v=slnugihiJtE";
 
 await dfy.videos(dfy.types.AUDIO_AND_VIDEO, null, [url], null, custom_options);
 ```
@@ -616,7 +616,7 @@ Example:
 ```javascript
 const path = "my/path/to/a/ffmpeg/binary";
 
-const url = "https://www.youtube.com/watch?v=slnugihiJtE";
+const url = "https://www.yt-url.com/watch?v=slnugihiJtE";
 
 await dfy.videos(dfy.types.AUDIO_AND_VIDEO, null, [url], null, null, path);
 ```
@@ -634,8 +634,8 @@ This method is by far the easiest, lets see an example:
 ```javascript
 //here you have the array containing your videos urls
 const urls = [
-  "https://www.youtube.com/watch?v=Bw3uBSfQJbI",
-  "https://www.youtube.com/watch?v=LCDaw0QmQQc"
+  "https://www.yt-url.com/watch?v=Bw3uBSfQJbI",
+  "https://www.yt-url.com/watch?v=LCDaw0QmQQc"
 ];
 
 //just pass it as the 3rd parameter, and you are done
@@ -650,9 +650,9 @@ Example:
 
 ```javascript
 const urls = [
-  "https://www.youtube.com/watch?v=EHMm_ElRvMA",
-  "https://www.youtube.com/watch?v=Zc6PL_f79x4",
-  "https://www.youtube.com/watch?v=gAanXAKqISE"
+  "https://www.yt-url.com/watch?v=EHMm_ElRvMA",
+  "https://www.yt-url.com/watch?v=Zc6PL_f79x4",
+  "https://www.yt-url.com/watch?v=gAanXAKqISE"
 ];
 
 const videos_info = await dfy.getVideosInfo(urls);
@@ -673,7 +673,7 @@ You can either pass the playlist/channel url, or, pass a json already containing
 This method is by far the easiest, lets see an example:
 
 ```javascript
-const url = "https://www.youtube.com/channel/UCwTYMmNi1Jm1WQje6FQCwpg";
+const url = "https://www.yt-url.com/channel/UCwTYMmNi1Jm1WQje6FQCwpg";
 
 //just pass it as the 3rd parameter, and you are done
 await dfy.playlist(dfy.types.VIDEO_ONLY, null, url);
@@ -686,7 +686,7 @@ To get the json containing all your playlist/channel videos info you need to use
 Example:
 
 ```javascript
-const url = "https://www.youtube.com/user/BrunoEMarrone";
+const url = "https://www.yt-url.com/user/BrunoEMarrone";
 
 const videos_info = await dfy.getPlaylistVideosInfo(url);
 
@@ -713,7 +713,7 @@ Lets see what "getVideosInfo" returns:
   items: [
     {
       title: "蕭亞軒 Elva Hsiao - 愛的主打歌 Theme Song Of Love (官方完整版MV)",
-      url_simple: 'https://www.youtube.com/watch?v=EHMm_ElRvMA',
+      url_simple: 'https://www.yt-url.com/watch?v=EHMm_ElRvMA',
       thumbnail: 'https://i.ytimg.com/vi/EHMm_ElRvMA/hqdefault.jpg',
       //this 'id' here is generated by DFY, more on that later
       id: '1590251886357277680',
@@ -729,7 +729,7 @@ Lets see what "getPlaylistVideosInfo" returns:
 {
   //here is some info available about the playlist
   id: 'UUwTYMmNi1Jm1WQje6FQCwpg',
-  url: 'https://www.youtube.com/playlist?list=UUwTYMmNi1Jm1WQje6FQCwpg',
+  url: 'https://www.yt-url.com/playlist?list=UUwTYMmNi1Jm1WQje6FQCwpg',
   title: 'Uploads from Ayşe Hatun Önal',
   visibility: 'everyone',
   description: null,
@@ -741,7 +741,7 @@ Lets see what "getPlaylistVideosInfo" returns:
     name: 'Ayşe Hatun Önal',
     avatar: 'https://yt3.ggpht.com/a/AATXAJz84c9Wb9F8RWR7fJ89cuGYhe5Z7gqjZrdgFA=s100-c-k-c0xffffffff-no-rj-mo',
     user: null,
-    channel_url: 'https://www.youtube.com/channel/UCwTYMmNi1Jm1WQje6FQCwpg',
+    channel_url: 'https://www.yt-url.com/channel/UCwTYMmNi1Jm1WQje6FQCwpg',
     user_url: null
   },
   //inside the 'items' array is where the info from all
@@ -750,7 +750,7 @@ Lets see what "getPlaylistVideosInfo" returns:
     {
       //this 'id' here is generated by DFY, more on that later
       id: '1590174181099421839',
-      url_simple: 'https://www.youtube.com/watch?v=8Fn2MvFp2bg',
+      url_simple: 'https://www.yt-url.com/watch?v=8Fn2MvFp2bg',
       title: 'Ayşe Hatun Önal - Selam Dengesiz',
       thumbnail: 'https://i.ytimg.com/vi/8Fn2MvFp2bg/hqdefault.jpg',
       downloaded: false
@@ -775,7 +775,7 @@ Example:
 
 ```javascript
 const videos_info = await dfy.getPlaylistVideosInfo(
-  "https://www.youtube.com/playlist?list=PL19B3DAC334D5DAD5"
+  "https://www.yt-url.com/playlist?list=PL19B3DAC334D5DAD5"
 );
 
 //to listen to any queue info you need to pass to "on"'s
@@ -864,10 +864,10 @@ Example:
 ```javascript
 const videos_info = await dfy.getVideosInfo(
   [
-    "https://www.youtube.com/watch?v=8C0e9YO5dxM",
-    "https://www.youtube.com/watch?v=uv8T4rxhGJU",
-	 "https://www.youtube.com/watch?v=mSyutsZ7GuA",
-	 "https://www.youtube.com/watch?v=3Id-q7ATM40"
+    "https://www.yt-url.com/watch?v=8C0e9YO5dxM",
+    "https://www.yt-url.com/watch?v=uv8T4rxhGJU",
+	 "https://www.yt-url.com/watch?v=mSyutsZ7GuA",
+	 "https://www.yt-url.com/watch?v=3Id-q7ATM40"
   ]
 );
 
