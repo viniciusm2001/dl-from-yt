@@ -3,8 +3,6 @@ const ytpl = require("ytpl");
 const emmiter = require("./emmiter");
 const os = require('os');
 const constants = require("./constants");
-const FsHandler = require("./fs_handler");
-const { DownloaderHelper } = require('node-downloader-helper');
 
 class Utils {
 
@@ -34,9 +32,33 @@ class Utils {
 	static getPlaylistItemsClean(items) {
 
 		for(let i = 0; i < items.length; i++) {
-			delete items[i].url;
-			delete items[i].duration;
-			delete items[i].author;
+
+			items[i].thumbnail = this.subStringWhenCharAppears(
+				"?",
+				items[i].thumbnail
+			);
+			
+			items[i].url_simple = items[i].shortUrl;
+
+			const keys = Object.keys(items[i]);
+
+			for(let o = 0; o < keys.length; o++){
+				switch(keys[o]){
+					case "id":
+						break;
+					case "url_simple":
+						break;
+					case "title":
+						break;
+					case "thumbnail":
+						break;
+					case "downloaded":
+						break;
+					default:
+						delete items[i][keys[o]];
+						break;
+				}
+			}
 		}
 
 		return items;
