@@ -11,11 +11,8 @@ class DlHandler {
 
 	static async ffmpeg(command, ffmpeg_path) {
 		return new Promise((resolve, reject) => {
-			
-			//poc == path or cmd
-			const poc = ffmpeg_path ? '"' + ffmpeg_path + '"' : "ffmpeg";
 
-			const cmd = poc + ' -y ' + command;
+			const cmd = '"' + ffmpeg_path + '"' + ' -y ' + command;
 			
 			exec(cmd, (err, stdout, stderr) => {
 				if(err) {
@@ -369,7 +366,7 @@ class DlHandler {
 			try {
 				Utils.emitInfo(id, "status", "Begining download");
 
-				const { date_options, convert_to_mp3, video_quality, biggest_video, best_mp3_thumbnails } = options;
+				const { date_options, video_quality, biggest_video, best_mp3_thumbnails } = options;
 				let { convert_to_mp4 } = options;
 				let merge_as = null;
 
@@ -391,6 +388,10 @@ class DlHandler {
 
 				let video_type = video_container;
 				
+				if(type === types.VIDEO_ONLY){
+					convert_to_mp4 = true;
+				}
+
 				if(convert_to_mp4) {
 
 					video_type = "mp4";
@@ -434,7 +435,7 @@ class DlHandler {
 				}
 
 				const video_dl_path = FsHandler.getPath(base_dl_path, title + "." + video_type);
-				const audio_dl_path = FsHandler.getPath(base_dl_path, title + "." + (convert_to_mp3 ? "mp3" : (audio_container === "mp4" ? "m4a" : "webm")));
+				const audio_dl_path = FsHandler.getPath(base_dl_path, title + "." + "mp3");
 
 				switch(type) {
 					case types.AUDIO_AND_VIDEO:
@@ -446,7 +447,7 @@ class DlHandler {
 						break;
 				
 					case types.AUDIO_ONLY:
-						await this.dlAudioOrVideo("audio", audio_dl_url, audio_dl_path, id, convert_to_mp3, temp_path, ffmpeg_path, audio_bitrate, thumbnail_url, best_mp3_thumbnails);
+						await this.dlAudioOrVideo("audio", audio_dl_url, audio_dl_path, id, true, temp_path, ffmpeg_path, audio_bitrate, thumbnail_url, best_mp3_thumbnails);
 						break;
 				}
 				

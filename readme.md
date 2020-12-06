@@ -18,17 +18,6 @@ const dfy = require("dl-from-yt")
 # Requirements
 
 - Node
-- FFmpeg accessible via your system cmd/terminal* (libx264 must be enabled on your FFmpeg if you want to use the ["convert_to_mp4"](#convert-to-mp4) option)
-
-Here are some tutorials:
-
-- [How to install FFmpeg on Ubuntu 16](https://stackoverflow.com/questions/52756925/ffmpeg-libx264-on-ubuntu-16)
-- [How to install FFmpeg on Windows 10](https://www.wikihow.com/Install-FFmpeg-on-Windows)**
-- [How to install FFmpeg on OS X](https://superuser.com/questions/624561/install-ffmpeg-on-os-x)
-
-*Except when downloading videos as audio only with the ["convert_to_mp3"](#convert-to-mp3) option equal to false, or, when downloading videos as video only with the ["convert_to_mp4"](#convert-to-mp4) option equal to false. Also, this requirement can be circunvented by using the "FFmpeg path" parameter, more info on that [here](#the-same-parameters-across-the-two-functions).
-
-**It requires [WinRar](https://www.win-rar.com)
 
 # How it works?
 
@@ -66,9 +55,9 @@ Not all the videos will be available to be merged as mp4 by default, but you can
 
 If you want to download the video as audio only, or as video only, both are possible.
 
-When downloading as audio only, the possible resulting files are a .webm or a m4a, and when downloading as video only it can be a .webm or a .mp4.
+When downloading as audio only, the video will be converted to mp3, and when downloading as video only the video will be converted to mp4.
 
-But, if you want to, you can convert the video for it to always be an mp4, or you can convert the audio for it to always be an mp3 (and even add the video thumbnail as a "album" cover), see [Options](#options) for more info on that.
+And, when downloading as audio only, you can even add the video thumbnail as a "album" cover, see [here](#add-video-thumbnail-to-mp3) for more info on that.
 
 ## Filenames
 
@@ -206,7 +195,6 @@ Down below you can see the default options json.
 ```javascript
 {
   video_quality: "4320p60",
-  convert_to_mp3: false,
   convert_to_mp4: false,
   add_video_thumbnail_to_mp3: false,
   index_separator: null,
@@ -250,7 +238,7 @@ To set the options you need to use the DFY method "setOptions", see the example 
 let options_json = await dfy.getOptions();
 
 //change any options you want to
-options_json.convert_to_mp3 = true;
+options_json.convert_to_mp4 = true;
 
 //and then save it
 await dfy.setOptions(options_json)
@@ -348,17 +336,13 @@ await dfy.setOptions(options_json);
 ]
 ```                                                                                           
 
-#### Convert to mp3
-
-The "convert_to_mp3" parameter is of type boolean, so, if set to true, when downloading videos as audio only all the files will be converted to mp3 (with the correct bitrate).
-
 #### Add video thumbnail to mp3
 
-If "convert_to_mp3" is set to true, then, the "add_video_thumbnail_to_mp3" parameter, that is of type boolean, will be able to take effect, so, if set to true, when downloading videos as audio only all the mp3 files will also get the video thumbnail added as a cover.
+The "add_video_thumbnail_to_mp3" parameter, is of type boolean, so, when set to true, when downloading videos as audio only all the mp3 files will also get the video thumbnail added as a cover.
 
 #### Convert to mp4
 
-The "convert_to_mp4" parameter is of type boolean, so, if set to true, when downloading videos as audio and video or video only, all the files will be converted to mp4.
+The "convert_to_mp4" parameter is of type boolean, so, if set to true, when downloading videos as audio and video, all the files will be converted to mp4.
 
 #### Index separator
 
@@ -533,7 +517,7 @@ The "log_already_downloaded" parameter is of type boolean, and represents if it 
 
 #### Best mp3 thumbnails
 
-If "convert_to_mp3" and "add_video_thumbnail_to_mp3" are set to true, then, the "best_mp3_thumbnails" parameter, that is of type boolean, will be able to take effect, so, if set to true, when downloading videos as audio only all the mp3 files will also get the best quality thumbnail added as a cover.
+If "add_video_thumbnail_to_mp3" is set to true, then, the "best_mp3_thumbnails" parameter, that is of type boolean, will be able to take effect, so, if set to true, when downloading videos as audio only all the mp3 files will also get the best quality thumbnail added as a cover.
 
 ## Downloading
 
@@ -605,20 +589,6 @@ const custom_options = dfy.default_options;
 const url = "https://www.yt-url.com/watch?v=slnugihiJtE";
 
 await dfy.videos(dfy.types.AUDIO_AND_VIDEO, null, [url], null, custom_options);
-```
-
-#### FFmpeg path (6th parameter - optional - EXPERIMENTAL)
-
-The "ffmpeg_path" parameter is of type string, and can be null, it represents the path to a ffmpeg binary, in case you don't have it accessible via or system cmd/terminal.
-
-Example:
-
-```javascript
-const path = "my/path/to/a/ffmpeg/binary";
-
-const url = "https://www.yt-url.com/watch?v=slnugihiJtE";
-
-await dfy.videos(dfy.types.AUDIO_AND_VIDEO, null, [url], null, null, path);
 ```
 
 ### Downloading videos

@@ -58,9 +58,11 @@ class DlFromYT {
       })
 	}
 	
-	static download(queue_type, type, options, videos, dl_path, custom_dl_folder, ffmpeg_path){
+	static download(queue_type, type, options, videos, dl_path, custom_dl_folder){
 		
 		return new Promise(async (resolve, reject) => {
+			
+			const ffmpeg_path = require('ffmpeg-static');
 			let retried = 0;
 			let retry = true;
 
@@ -147,7 +149,7 @@ class DlFromYT {
 		
 	}
 
-	static async videos(type, videos_info, urls = null, custom_dl_folder = null, custom_options = null, ffmpeg_path = null){
+	static async videos(type, videos_info, urls = null, custom_dl_folder = null, custom_options = null){
       return new Promise(async (resolve, reject) => {
 			try {
 				await this.checkType(type);
@@ -165,8 +167,7 @@ class DlFromYT {
 					options, 
 					videos, 
 					dl_path,
-					custom_dl_folder,
-					ffmpeg_path
+					custom_dl_folder
 				)
 						
 				resolve();
@@ -177,7 +178,7 @@ class DlFromYT {
       })
    }
 
-   static async playlist(type, playlist_videos_info, url = null, custom_dl_folder = null, custom_options = null, ffmpeg_path = null){
+   static async playlist(type, playlist_videos_info, url = null, custom_dl_folder = null, custom_options = null){
       return new Promise(async (resolve, reject) => {
 			try {
 				await this.checkType(type);
@@ -199,8 +200,7 @@ class DlFromYT {
 					options, 
 					videos, 
 					playlist_dl_path,
-					custom_dl_folder,
-					ffmpeg_path
+					custom_dl_folder
 				)
 
 				resolve();

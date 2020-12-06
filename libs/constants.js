@@ -46,7 +46,6 @@ const constants = {
 
 	DEFAULT_OPTIONS_JSON: {
 		video_quality: "4320p60",
-		convert_to_mp3: false,
 		convert_to_mp4: false,
 		add_video_thumbnail_to_mp3: false,
 		index_separator: null,
