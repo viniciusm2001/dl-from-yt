@@ -3,21 +3,25 @@
 
 Dl From YT (or DFY) is an npm package that allows you to download videos, playlists, and channels from YT.
 
-Note: DFY cannot download livestreams, or recorded livestreams.
+Note: DFY cannot download livestreams (except the recorded ones).
 
 # Consider this when reading the docs
 
 Whenever you see any code example that's using the JavaScript "await", consider that example to be running inside an async function.
 
-And when you see any "dfy" being used in any code example, assume what the example below will show, is where this "dfy" originated from.
+And this where the "dfy" from the examples comes from:
 
 ```javascript
 const dfy = require("dl-from-yt")
 ```
 
-# Requirements
+# News on the 2.x.x version
 
-- Node
+Now, ffmpeg is no more required, since it is download by ffmpeg-static upon DFY installation.
+
+When downloading as audio only, the resulting file will always be an mp3, and as video only it will always be an mp4, but audio and video stays the same.
+
+Convert to mp3 options was removed, because now on audio only it will always be an mp3, but convert to mp4 was maintained, in case you want the audio and video download output to be an mp4 file.
 
 # How it works?
 
