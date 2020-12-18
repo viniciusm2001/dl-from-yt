@@ -151,7 +151,7 @@ class Utils {
 					video.url_simple = urls[i];
 					video.thumbnail = this.subStringWhenCharAppears(
 						"?",
-						info.videoDetails.thumbnail.thumbnails[0].url
+						info.videoDetails.thumbnails[0].url
 					);
 
 					videos.items.push(video);
