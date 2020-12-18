@@ -31,11 +31,11 @@ class Utils {
 
 	static getPlaylistItemsClean(items) {
 
-		for(let i = 0; i < items.length; i++) {
+		for(let i = 0; i < items.length; i++) {//console.log(items[i])
 
 			items[i].thumbnail = this.subStringWhenCharAppears(
 				"?",
-				items[i].thumbnail
+				items[i].thumbnails[0].url
 			);
 			
 			items[i].url_simple = items[i].shortUrl;

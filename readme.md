@@ -21,7 +21,7 @@ Now, ffmpeg is no more required, since it is download by ffmpeg-static upon DFY 
 
 When downloading as audio only, the resulting file will always be an mp3, and as video only it will always be an mp4, but audio and video stays the same.
 
-Convert to mp3 options was removed, because now on audio only it will always be an mp3, but convert to mp4 was maintained, in case you want the audio and video download output to be an mp4 file.
+Convert to mp3 option was removed, because now on audio only it will always be an mp3, but convert to mp4 was maintained, in case you want the audio and video download output to be an mp4 file.
 
 # How it works?
 
