@@ -3,7 +3,7 @@ const DlHandler = require("./dl_handler");
 const Utils = require("./utils");
 const constants = require("./constants");
 
-const queueFor = async (queue_type, type, options, base_dl_path, videos_info, retried, ffmpeg_path) => {
+const queueFor = async (queue_type, type, options, base_dl_path, videos_info, retried) => {
 
    return new Promise(async (resolve, reject) => {
 		
@@ -113,8 +113,7 @@ const queueFor = async (queue_type, type, options, base_dl_path, videos_info, re
 								thumbnail_url,
 								title, 
 								base_dl_path,
-								queue_temp_path,
-								ffmpeg_path
+								queue_temp_path
 							)
 							
 							videos_info.items[vi].downloaded = true;

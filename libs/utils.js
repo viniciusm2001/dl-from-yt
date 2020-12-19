@@ -31,7 +31,7 @@ class Utils {
 
 	static getPlaylistItemsClean(items) {
 
-		for(let i = 0; i < items.length; i++) {//console.log(items[i])
+		for(let i = 0; i < items.length; i++) {
 
 			items[i].thumbnail = this.subStringWhenCharAppears(
 				"?",

@@ -9,9 +9,10 @@ const { DownloaderHelper } = require('node-downloader-helper');
 
 class DlHandler {
 
-	static async ffmpeg(command, ffmpeg_path) {
+	static async ffmpeg(command) {
 		return new Promise((resolve, reject) => {
-
+			
+			const ffmpeg_path = require('ffmpeg-static');
 			const cmd = '"' + ffmpeg_path + '"' + ' -y ' + command;
 			
 			exec(cmd, (err, stdout, stderr) => {
@@ -23,6 +24,86 @@ class DlHandler {
 			})
 		})
 	}
+
+	static async ffprobe(file_path) {
+		return new Promise(async (resolve, reject) => {
+			
+			const ffprobe_path = require('ffprobe-static').path;
+			
+			try {
+				const info = await require("ffprobe")(file_path, {path: ffprobe_path});
+				resolve(info);
+
+			} catch(err) {
+				reject(err);
+			}
+		})
+	}
+
+	static async get_stream_index(file_path, audio_or_video, file_info) {
+		return new Promise(async (resolve, reject) => {
+			
+			const get_as_str = (txt) => {
+				return (txt + "").toLowerCase();
+			}
+
+			try {
+				const info = await this.ffprobe(file_path);
+				
+				if(info.streams.length > 1){
+					
+					let index = -1;
+
+					if(audio_or_video === "audio"){
+						const audio_codec = get_as_str(file_info.audioCodec);
+						const sample_rate = parseInt(file_info.audioSampleRate);
+
+						for(let i = 0; i < info.streams.length; i++){
+	
+							if(info.streams[i].codec_type == "audio"){
+								if(get_as_str(getinfo.streams[i].codec_name) === audio_codec){
+									if(parseInt(info.streams[i].sample_rate) === sample_rate){
+										index = info.streams[i].index;
+										break
+									}
+								}
+							}
+	
+						}
+	
+					} else {
+
+						const itag = parseInt(file_info.itag);
+						const bitrate = parseInt(file_info.bitrate);
+
+						for(let i = 0; i < info.streams.length; i++){
+
+							if(info.streams[i].codec_type == "video"){
+								if(parseInt(info.streams[i].tags.id) === itag){
+									if(parseInt(info.streams[i].tags.variant_bitrate) === bitrate){
+										index = info.streams[i].index;
+										break;
+									}
+								}
+							}
+	
+						}
+					}
+
+					index == -1 ? 
+						reject(new Error("Unable to find " + audio_or_video + " stream index")) : 
+						resolve(index);
+
+				} else {
+					resolve(0);
+				}
+
+			} catch(err) {
+				reject(err);
+			}
+		})
+	}
+	
 
 	static async dl(url, dl_path, id) {
 		return new Promise((resolve, reject) => {
@@ -150,29 +231,33 @@ class DlHandler {
 		return;
 	}
 
-	static async mergeAs(merge_opt, video_path, audio_path, output_path, ffmpeg_path, audio_bitrate) {
+	static async mergeAs(merge_opt, video_path, audio_path, output_path, audio_kbps, vsi, asi) {
 		return new Promise(async (resolve, reject) => {
 
-			let cmd = '-i "' + video_path + '" -i "' + audio_path + '" -c copy "' + output_path + '"';
+			let cmd = '-i "' + video_path + '" -i "' + audio_path + '" -map 0:' + 
+				vsi + ' -map 1:' + asi + ' -c copy -shortest "' + output_path + '"';
 			
 			if(merge_opt){
 				switch(merge_opt) {
 					case "mp4_a":
-						cmd = '-i "' + video_path + '" -i "' + audio_path + '" -c:v copy -c:a aac -b:a ' + audio_bitrate + 'k "' + output_path + '"';
+						cmd = '-i "' + video_path + '" -i "' + audio_path + '" -map 0:' + 
+							vsi + ' -map 1:' + asi + ' -c:v copy -c:a aac -b:a ' + audio_kbps + 'k -shortest "' + output_path + '"';
 						break;
 				
 					case "mp4_v":
-						cmd = '-i "' + video_path + '" -i "' + audio_path + '" -c:v libx264 -c:a copy "' + output_path + '"';
+						cmd = '-i "' + video_path + '" -i "' + audio_path + '" -map 0:' + 
+							vsi + ' -map 1:' + asi + ' -c:v libx264 -c:a copy -shortest "' + output_path + '"';
 						break;
 				
 					case "mp4_av":
-						cmd = '-i "' + video_path + '" -i "' + audio_path + '" -c:v libx264 -c:a aac -b:a ' + audio_bitrate + 'k "' + output_path + '"';
+						cmd = '-i "' + video_path + '" -i "' + audio_path + '" -map 0:' + 
+							vsi + ' -map 1:' + asi + ' -c:v libx264 -c:a aac -b:a ' + audio_kbps + 'k -shortest "' + output_path + '"';
 						break;
 				}
 			}
 
 			try {
-				await this.ffmpeg(cmd, ffmpeg_path);
+				await this.ffmpeg(cmd);
 				await FsHandler.deleteFile(video_path);
 				await FsHandler.deleteFile(audio_path);
 
@@ -185,27 +270,27 @@ class DlHandler {
 		})
 	}
 
-	static async convertTo(type, input_path, output_path, ffmpeg_path, audio_bitrate = null, thumbnail_url = null, best_mp3_thumbnails = null) {
+	static async convertTo(type, input_path, output_path, audio_kbps, si, thumbnail_url = null, best_mp3_thumbnails = null) {
 		return new Promise(async (resolve, reject) => {
 
 			let cmd = "";
 			let temp_mp3_path = "";
 
 			if(type === "mp4"){
-				cmd = '-i "' + input_path + '" -c:v libx264 "' + output_path;
+				cmd = '-i "' + input_path + '" -map 0:' + si + ' -c:v libx264 -an "' + output_path + '"';
 
 			} else {
 				if(thumbnail_url){
 					temp_mp3_path = Utils.changeFileExtension(input_path, "mp3");
-					cmd = '-i "' + input_path + '" -b:a ' + audio_bitrate + 'k "' + temp_mp3_path + '"';
+					cmd = '-i "' + input_path + '" -map 0:' + si + ' -b:a ' + audio_kbps + 'k "' + temp_mp3_path + '"';
 
 				} else {
-					cmd = '-i "' + input_path + '" -b:a ' + audio_bitrate + 'k "' + output_path + '"';
+					cmd = '-i "' + input_path + '" -map 0:' + si + ' -b:a ' + audio_kbps + 'k "' + output_path + '"';
 				}
 			}
 			
 			try {
-				await this.ffmpeg(cmd, ffmpeg_path);
+				await this.ffmpeg(cmd);
 
 				if(type === "mp3"){
 					if(thumbnail_url){
@@ -229,7 +314,7 @@ class DlHandler {
 							await Utils.sleep(500);
 						}
 
-						await this.ffmpeg(cmd, ffmpeg_path);
+						await this.ffmpeg(cmd);
 						
 						await FsHandler.deleteFile(thumbnail_path);
 						await FsHandler.deleteFile(temp_mp3_path);
@@ -250,7 +335,7 @@ class DlHandler {
 
 	
 
-	static dlVideoAndAudio(merge_as, video_dl_url, audio_dl_url, path, id, audio_bitrate, temp_path, ffmpeg_path) {
+	static dlVideoAndAudio(merge_as, video_dl_url, audio_dl_url, path, id, temp_path, video, audio) {
 		return new Promise(async (resolve, reject) => {
 			
 			let total_percentage = 0;
@@ -270,6 +355,9 @@ class DlHandler {
 				Utils.emitInfo(id, "status", "Downloading video");
 				await this.dl(video_dl_url, video_path, id);
 
+				//video stream index
+				const vsi = await this.get_stream_index(video_path, "video", video);
+
 				total_percentage = 50;
 
 				Utils.emitInfo(id, "status", "Downloading audio");
@@ -278,8 +366,11 @@ class DlHandler {
 
 				total_percentage = 100;
 
+				//audio stream index
+				const asi = await this.get_stream_index(audio_path, "audio", audio);
+
 				Utils.emitInfo(id, "status", "Merging audio and video");
-				await this.mergeAs(merge_as, video_path, audio_path, path, ffmpeg_path, audio_bitrate,);
+				await this.mergeAs(merge_as, video_path, audio_path, path, audio.audioBitrate, vsi, asi);
 
 				Utils.emitInfo(id, "end", path);
 
@@ -297,7 +388,7 @@ class DlHandler {
 
 	}
 
-	static dlAudioOrVideo(type, dl_url, path, id, convert, temp_path, ffmpeg_path, audio_bitrate = null, thumbnail_url = null, best_mp3_thumbnails = null) {
+	static dlAudioOrVideo(type, dl_url, path, id, temp_path, file, thumbnail_url = null, best_mp3_thumbnails = null) {
 		return new Promise(async (resolve, reject) => {
 
 			let downloaded = false;
@@ -316,15 +407,12 @@ class DlHandler {
 					Utils.emitInfo(id, "dl_end");
 
 					downloaded = true;
+					
+					//video stream index
+					const vsi = await this.get_stream_index(video_path, "video", file);
 
-					if(convert) {
-						Utils.emitInfo(id, "status", "Converting to mp4");
-						await this.convertTo("mp4", video_path, path, ffmpeg_path);
-
-					} else {
-						Utils.emitInfo(id, "status", "Moving file");
-						await FsHandler.moveFile(video_path, path);
-					}
+					Utils.emitInfo(id, "status", "Converting to mp4");
+					await this.convertTo("mp4", video_path, path, null, vsi);					
 
 				} else {
 					const audio_path = FsHandler.getPath(temp_path, id + ".audio");
@@ -336,14 +424,11 @@ class DlHandler {
 
 					downloaded = true;
 
-					if(convert) {
-						Utils.emitInfo(id, "status", "Converting to mp3");
-						await this.convertTo("mp3", audio_path, path, ffmpeg_path, audio_bitrate, thumbnail_url, best_mp3_thumbnails);
-
-					} else {
-						Utils.emitInfo(id, "status", "Moving file");
-						await FsHandler.moveFile(audio_path, path);
-					}
+					//audio stream index
+					const asi = await this.get_stream_index(audio_path, "audio", file);
+					
+					Utils.emitInfo(id, "status", "Converting to mp3");
+					await this.convertTo("mp3", audio_path, path, file.audioBitrate, asi, thumbnail_url, best_mp3_thumbnails);
 				}
 
 				Utils.emitInfo(id, "end", path);
@@ -361,7 +446,7 @@ class DlHandler {
 		})
 	}
 
-	static async downloadVideoAs(type, id, options, video_url, thumbnail_url, title, base_dl_path, temp_path, ffmpeg_path) {
+	static async downloadVideoAs(type, id, options, video_url, thumbnail_url, title, base_dl_path, temp_path) {
 		return new Promise(async (resolve, reject) => {
 			try {
 				Utils.emitInfo(id, "status", "Begining download");
@@ -372,64 +457,51 @@ class DlHandler {
 
 				const info = await ytdl.getInfo(video_url);
 
-				const formats = FormatsHandler.getFormats(info.formats, video_quality, biggest_video);
-
-				const audio_container = formats.audio.container;
-				const audio_bitrate = formats.audio.audioBitrate;
-				const audio_dl_url = formats.audio.url;
-				
-				const video_container = formats.video.container;
-				const video_dl_url = formats.video.url;
+				const { audio, video } = FormatsHandler.getFormats(info.formats, video_quality, biggest_video);
 
 				if(date_options) {
 					const date = await Utils.getVideoDt(info, date_options);
 					title = title + date_options.title_separator + date;
 				}
 
-				let video_type = video_container;
+				let video_type = video.container;
 				
 				if(type === types.VIDEO_ONLY){
-					convert_to_mp4 = true;
-				}
-
-				if(convert_to_mp4) {
-
 					video_type = "mp4";
-					
-					if(type === types.VIDEO_ONLY){
+				
+				} else {
 
-						if(video_container === "mp4"){
-							convert_to_mp4 = false;
-						}
+					if(convert_to_mp4) {
 
-					} else {
+						video_type = "mp4";
+						
 						if(type === types.AUDIO_AND_VIDEO){
 							merge_as = "mp4_";
-
-							if(video_container !== audio_container){
-
-								if(audio_container !== "mp4"){
+	
+							if(video.container !== audio.container){
+	
+								if(audio.container !== "mp4"){
 									merge_as += "a";
 								}
 								
-								if(video_container !== "mp4"){
+								if(video.container !== "mp4"){
 									merge_as += "v";
 								}
-
+	
 							} else {
-								if(video_container === "mp4"){
+								if(video.container === "mp4"){
 									merge_as = null;
 								} else {
 									merge_as += "av";
 								}
 							}
 						}
-					}
-
-				} else {
-					if(type === types.AUDIO_AND_VIDEO){
-						if(video_container !== audio_container){
-							video_type = "mkv";
+	
+					} else {
+						if(type === types.AUDIO_AND_VIDEO){
+							if(video.container !== audio.container){
+								video_type = "mkv";
+							}
 						}
 					}
 				}
@@ -439,15 +511,15 @@ class DlHandler {
 
 				switch(type) {
 					case types.AUDIO_AND_VIDEO:
-						await this.dlVideoAndAudio(merge_as, video_dl_url, audio_dl_url, video_dl_path, id, audio_bitrate, temp_path, ffmpeg_path);
+						await this.dlVideoAndAudio(merge_as, video.url, audio.url, video_dl_path, id, temp_path, video, audio);
 						break;
 				
 					case types.VIDEO_ONLY:
-						await this.dlAudioOrVideo("video", video_dl_url, video_dl_path, id, convert_to_mp4, temp_path, ffmpeg_path);
+						await this.dlAudioOrVideo("video", video.url, video_dl_path, id, temp_path, video);
 						break;
 				
 					case types.AUDIO_ONLY:
-						await this.dlAudioOrVideo("audio", audio_dl_url, audio_dl_path, id, true, temp_path, ffmpeg_path, audio_bitrate, thumbnail_url, best_mp3_thumbnails);
+						await this.dlAudioOrVideo("audio", audio.url, audio_dl_path, id, temp_path, audio, thumbnail_url, best_mp3_thumbnails);
 						break;
 				}
 				

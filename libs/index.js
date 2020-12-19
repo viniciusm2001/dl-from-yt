@@ -61,8 +61,6 @@ class DlFromYT {
 	static download(queue_type, type, options, videos, dl_path, custom_dl_folder){
 		
 		return new Promise(async (resolve, reject) => {
-			
-			const ffmpeg_path = require('ffmpeg-static');
 			let retried = 0;
 			let retry = true;
 
@@ -111,7 +109,6 @@ class DlFromYT {
 							dl_path,
 							videos,
 							retried === 0 ? false : true,
-							ffmpeg_path
 						);
 
 						retry = false;
