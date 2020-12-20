@@ -66,6 +66,13 @@ class DlHandler {
 										index = info.streams[i].index;
 										break
 									}
+								} else {
+									if(audio_codec.includes(get_as_str(info.streams[i].codec_tag_string))){
+										if(parseInt(info.streams[i].sample_rate) === sample_rate){
+											index = info.streams[i].index;
+											break
+										}
+									}
 								}
 							}
 	
@@ -75,14 +82,29 @@ class DlHandler {
 
 						const itag = parseInt(file_info.itag);
 						const bitrate = parseInt(file_info.bitrate);
+						const video_codec = get_as_str(file_info.videoCodec);
 
 						for(let i = 0; i < info.streams.length; i++){
-
+							
 							if(info.streams[i].codec_type == "video"){
 								if(parseInt(info.streams[i].tags.id) === itag){
 									if(parseInt(info.streams[i].tags.variant_bitrate) === bitrate){
 										index = info.streams[i].index;
 										break;
+									}
+								} else {
+									if(video_codec.includes(get_as_str(info.streams[i].codec_tag_string))){
+
+										if(file_info.width === info.streams[i].width || 
+											file_info.width === info.streams[i].coded_width){
+
+											if(file_info.height === info.streams[i].height || 
+												file_info.height === info.streams[i].coded_height){
+													
+												index = info.streams[i].index;
+												break
+											}
+										}
 									}
 								}
 							}
