@@ -1,6 +1,6 @@
 {
   "name": "dl-from-yt",
-  "version": "2.1.2",
+  "version": "2.1.4",
   "description": "",
   "main": "./libs/index.js",
   "scripts": {
@@ -16,9 +16,9 @@
     "ffmpeg-static": "^4.2.7",
     "ffprobe": "^1.1.2",
     "ffprobe-static": "^3.0.0",
-    "node-downloader-helper": "^1.0.15",
-    "ytdl-core": "^4.4.3",
-    "ytpl": "^2.0.4"
+    "node-downloader-helper": "^1.0.17",
+    "ytdl-core": "^4.4.5",
+    "ytpl": "^2.0.5"
   },
   "keywords": [
     "yt",
