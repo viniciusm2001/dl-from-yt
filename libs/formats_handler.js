@@ -7,23 +7,38 @@ class FormatsHandler {
 		const get_format_score = (value_or_qualityLabel) => {
 					
 			let quality = parseInt(
-				Utils.subStringWhenCharAppears("p", value_or_qualityLabel)
+				Utils.subStringWhenCharAppears("s", 
+					Utils.subStringWhenCharAppears("p", value_or_qualityLabel)
+				)
 			);
-
-			if(value_or_qualityLabel.includes("15")){
-				quality -= 1;
-			}
-
-			if(value_or_qualityLabel.includes("p60")){
-				quality += 3;
-			}
-
-			if(value_or_qualityLabel.includes("p50")){
+			
+			if(value_or_qualityLabel.includes("s")){
 				quality += 1;
+
+				if(value_or_qualityLabel.includes("s60")){
+					quality += 3;
+				}
+
+				if(value_or_qualityLabel.includes("s50")){
+					quality += 1;
+				}
+
+			} else {
+				if(value_or_qualityLabel.includes("p60")){
+					quality += 3;
+				}
+
+				if(value_or_qualityLabel.includes("p50")){
+					quality += 1;
+				}
 			}
 
 			if(value_or_qualityLabel.includes("HDR")){
 				quality += 1;
+			}
+
+			if(value_or_qualityLabel.includes("15")){
+				quality -= 1;
 			}
 				
 			return quality;
