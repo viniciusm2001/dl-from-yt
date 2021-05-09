@@ -58,7 +58,7 @@ class FormatsHandler {
 			if(formats[i].hasVideo) {
 
 				const format_score = get_format_score(formats[i].qualityLabel);
-				const size = parseInt(formats[i].bitrate);
+				const size = parseInt(formats[i].contentLength);
 
 				if(format_score === video_quality_score) {
 
