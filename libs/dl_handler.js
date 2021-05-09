@@ -61,7 +61,7 @@ class DlHandler {
 						for(let i = 0; i < info.streams.length; i++){
 	
 							if(info.streams[i].codec_type == "audio"){
-								if(get_as_str(getinfo.streams[i].codec_name) === audio_codec){
+								if(get_as_str(info.streams[i].codec_name) === audio_codec){
 									if(parseInt(info.streams[i].sample_rate) === sample_rate){
 										index = info.streams[i].index;
 										break
@@ -80,35 +80,49 @@ class DlHandler {
 	
 					} else {
 
-						const itag = parseInt(file_info.itag);
-						const bitrate = parseInt(file_info.bitrate);
-						const video_codec = get_as_str(file_info.videoCodec);
+						let best_bitrate = -1;
 
 						for(let i = 0; i < info.streams.length; i++){
 							
 							if(info.streams[i].codec_type == "video"){
-								if(parseInt(info.streams[i].tags.id) === itag){
-									if(parseInt(info.streams[i].tags.variant_bitrate) === bitrate){
-										index = info.streams[i].index;
-										break;
+
+								let set_index = false;
+								
+								if(file_info.width === info.streams[i].width){
+									if(file_info.height === info.streams[i].height){
+										set_index = true;
 									}
 								} else {
-									if(video_codec.includes(get_as_str(info.streams[i].codec_tag_string))){
+									if(file_info.width === info.streams[i].coded_width){
+										if(file_info.height === info.streams[i].coded_height){
+											set_index = true;
+										}
+									}
+								}
+								
+								if(set_index){
 
-										if(file_info.width === info.streams[i].width || 
-											file_info.width === info.streams[i].coded_width){
-
-											if(file_info.height === info.streams[i].height || 
-												file_info.height === info.streams[i].coded_height){
-													
+									const variant_bitrate = parseInt(info.streams[i].tags.variant_bitrate);
+									
+									if(best_bitrate === -1){
+										best_bitrate = variant_bitrate;
+										index = info.streams[i].index;
+										
+									} else {
+										if(file_info.biggest_video){
+											if(variant_bitrate > best_bitrate){
+												best_bitrate = variant_bitrate;
 												index = info.streams[i].index;
-												break
+											}
+										} else {
+											if(variant_bitrate < best_bitrate){
+												best_bitrate = variant_bitrate;
+												index = info.streams[i].index;
 											}
 										}
 									}
 								}
 							}
-	
 						}
 					}
 
@@ -480,7 +494,7 @@ class DlHandler {
 				const info = await ytdl.getInfo(video_url);
 
 				const { audio, video } = FormatsHandler.getFormats(info.formats, video_quality, biggest_video);
-
+				
 				if(date_options) {
 					const date = await Utils.getVideoDt(info, date_options);
 					title = title + date_options.title_separator + date;
@@ -523,6 +537,10 @@ class DlHandler {
 						if(type === types.AUDIO_AND_VIDEO){
 							if(video.container !== audio.container){
 								video_type = "mkv";
+							} else {
+								if(video.hls_or_dash){
+									video_type = "mkv";
+								}
 							}
 						}
 					}

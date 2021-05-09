@@ -55,10 +55,28 @@ class FormatsHandler {
 
 		for (let i = 0; i < formats.length; i++) {
 			
+			if(formats[i].type){
+				if((formats[i].type.toLowerCase()).includes("otf")){
+					continue;
+				}	
+			}
+			
 			if(formats[i].hasVideo) {
 
-				const format_score = get_format_score(formats[i].qualityLabel);
-				const size = parseInt(formats[i].contentLength);
+				let format_score = get_format_score(formats[i].qualityLabel);
+				let size = parseInt(formats[i].bitrate);
+				formats[i].hls_or_dash = false
+				formats[i].biggest_video = biggest_video
+
+				if(formats[i].isDashMPD){
+					formats[i].hls_or_dash = true;
+					size += size * 0.1;
+				} else {
+					if(formats[i].isHLS){
+						formats[i].hls_or_dash = true;
+						size += size * 0.1;
+					}
+				}
 
 				if(format_score === video_quality_score) {
 
