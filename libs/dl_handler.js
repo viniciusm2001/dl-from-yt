@@ -479,7 +479,7 @@ class DlHandler {
 
 				const info = await ytdl.getInfo(video_url);
 
-				const { audio, video } = FormatsHandler.getFormats(info.formats, video_quality, biggest_video);
+				const { audio, video } = FormatsHandler.getFormats(info.formats, video_quality, biggest_video);//console.log("audio", audio);console.log("video", video)
 
 				if(date_options) {
 					const date = await Utils.getVideoDt(info, date_options);
