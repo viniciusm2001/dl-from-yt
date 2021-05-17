@@ -168,7 +168,7 @@ class Utils {
 	}
 
 	static changeFileExtension(file_path, new_extension) {
-		const fp_array = file_path.split(".");
+		let fp_array = file_path.split(".");
 
 		fp_array[fp_array.length - 1] = new_extension;
 
