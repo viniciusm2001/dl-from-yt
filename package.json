@@ -1,6 +1,6 @@
 {
   "name": "dl-from-yt",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "",
   "main": "./libs/index.js",
   "scripts": {
@@ -13,11 +13,11 @@
   },
   "license": "MIT",
   "dependencies": {
-    "ffmpeg-static": "^4.3.0",
+    "ffmpeg-static": "^4.4.0",
     "ffprobe": "^1.1.2",
     "ffprobe-static": "^3.0.0",
     "node-downloader-helper": "^1.0.18",
-    "ytdl-core": "^4.8.0",
+    "ytdl-core": "^4.8.3",
     "ytpl": "^2.2.1"
   },
   "keywords": [
